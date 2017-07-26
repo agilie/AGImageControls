@@ -1,0 +1,16 @@
+PODS:
+  - AGImageControls (0.1.0)
+
+DEPENDENCIES:
+  - AGImageControls (from `../`)
+
+EXTERNAL SOURCES:
+  AGImageControls:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  AGImageControls: b5979f67f5d63644bc1a379fa5544e4f306f9029
+
+PODFILE CHECKSUM: c99424506658a95cffec3e93fbf54fa0fb4685f1
+
+COCOAPODS: 1.2.1

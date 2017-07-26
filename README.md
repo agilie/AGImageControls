@@ -3,7 +3,8 @@
 <img src="https://user-images.githubusercontent.com/4165054/28629674-c7a917aa-7230-11e7-94c6-4e76ffa2b032.png" alt="AGImageControls" title="AGImageControls" width="557"/>
 </p>
 
-<img src="http://weekly.ascii.jp/elem/000/000/261/261806/Macp11_Metal_1200x.jpg" alt="Metal" title="Metal" width="557"/>
+<p align="center">
+<img src="http://weekly.ascii.jp/elem/000/000/261/261806/Macp11_Metal_1200x.jpg" alt="Metal" title="Metal" width="400"/>
 </p>
 
 <p>

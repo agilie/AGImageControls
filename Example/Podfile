@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'AGImageControls_Example' do
+  pod 'AGImageControls', :path => '../'
+
+  target 'AGImageControls_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

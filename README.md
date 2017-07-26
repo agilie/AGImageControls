@@ -11,11 +11,29 @@
 
 </p>
 
+<p align="center">
 
-[![CI Status](http://img.shields.io/travis/liptugamichael@gmail.com/AGImageControls.svg?style=flat)](https://travis-ci.org/liptugamichael@gmail.com/AGImageControls)
-[![Version](https://img.shields.io/cocoapods/v/AGImageControls.svg?style=flat)](http://cocoapods.org/pods/AGImageControls)
-[![License](https://img.shields.io/cocoapods/l/AGImageControls.svg?style=flat)](http://cocoapods.org/pods/AGImageControls)
-[![Platform](https://img.shields.io/cocoapods/p/AGImageControls.svg?style=flat)](http://cocoapods.org/pods/AGImageControls)
+<a href="https://www.agilie.com?utm_source=github&utm_medium=referral&utm_campaign=Git_Swift&utm_term=AGImageControls">
+<img src="https://img.shields.io/badge/Made%20by-Agilie-green.svg?style=flat" alt="Made by Agilie">
+</a>
+
+<a href="https://travis-ci.org/liptugamichael@gmail.com/AGImageControls">
+<img src="http://img.shields.io/travis/agilie/AGImageControls.svg?style=flat" alt="CI Status">
+</a>
+
+<a href="http://cocoapods.org/pods/AGImageControls">
+<img src="https://img.shields.io/cocoapods/v/AGImageControls.svg?style=flat" alt="Version">
+</a>
+
+<a href="http://cocoapods.org/pods/AGImageControls">
+<img src="https://img.shields.io/cocoapods/l/AGImageControls.svg?style=flat" alt="License">
+</a>
+
+<a href="http://cocoapods.org/pods/AGImageControls">
+<img src="https://img.shields.io/cocoapods/p/AGImageControls.svg?style=flat" alt="Platform">
+</a>
+
+</p>
 
 Hey, everyone!
 We’re happy to share with you our new lightweight and open-source library called AGImageControls and free to use. 

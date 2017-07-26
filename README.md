@@ -1,5 +1,4 @@
 <p align="center">
-
 <img src="https://user-images.githubusercontent.com/4165054/28629674-c7a917aa-7230-11e7-94c6-4e76ffa2b032.png" alt="AGImageControls" title="AGImageControls" width="557"/>
 </p>
 
@@ -37,7 +36,16 @@
 
 Hey, everyone!
 We’re happy to share with you our new lightweight and open-source library called AGImageControls and free to use. 
-Integrate AGImageControls library into your project and get an efficient tool for photos, screenshots, and other images processing. (Supporting Metal Performance Shaders.)
+Integrate AGImageControls library into your project and get an efficient tool for photos, screenshots, and other images processing. (Supporting Metal Performance Shaders)
+
+AGImageControls allows users to:
+
+- process any image with special filters. Due to these filters, a user can control the saturation, brightness, contrast, and sharpness of the picture, and also apply a gradient of the appropriate color and the suitable transparency
+
+- easily supplement an image with a title and a brief description. In addition, one can select the font type, color, and size
+
+- use vector masks to add emotions and accents to the image. You can also turn the elements through 360 degrees and set the desired slope
+
 
 ## Installation
 
@@ -50,6 +58,7 @@ pod "AGImageControls"
 
 ## Demo
 
+<img src="https://user-images.githubusercontent.com/4165054/28632257-9be44f24-7238-11e7-95da-1e65d40dad25.gif" alt="AGImageControls Demo" height="430" width="250" border ="50"> <img src="https://user-images.githubusercontent.com/4165054/28632626-eceb39b8-7239-11e7-8fd0-2c49aac29ac1.gif" alt="AGImageControls Demo" height="430" width="250" border ="50">
 
 ## Example
 

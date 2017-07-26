@@ -7,36 +7,26 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'AGImageControls'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of AGImageControls.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
-  s.description      = <<-DESC
+s.name             = 'AGImageControls'
+s.version          = '0.1.0'
+s.platform         = :ios, '9.0'
+s.summary          = 'A short description of AGImageControls.'
+s.description      = <<-DESC
 TODO: Add long description of the pod here.
-                       DESC
+DESC
 
-  s.homepage         = 'https://github.com/liptugamichael@gmail.com/AGImageControls'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'liptugamichael@gmail.com' => 'liptugamichael@gmail.com' }
-  s.source           = { :git => 'https://github.com/liptugamichael@gmail.com/AGImageControls.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+s.homepage         = 'https://github.com/agilie/AGImageControls'
+s.license          = { :type => 'MIT', :file => 'LICENSE' }
+s.author           = { 'Agilie' => 'info@agilie.com' }
+s.source           = { :git => 'https://github.com/agilie/AGImageControls.git', :tag => '0.1.0' }
 
-  s.ios.deployment_target = '8.0'
+s.ios.deployment_target = '9.0'
+#s.requires_arc = true
 
-  s.source_files = 'AGImageControls/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'AGImageControls' => ['AGImageControls/Assets/*.png']
-  # }
+s.source_files = 'AGImageControls/Classes/**/*.{swift,metal}'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+s.resource_bundles = {
+'AGImageControls' => ['AGImageControls/Assets/Fonts/*.ttf', 'AGImageControls/Assets/Images/*.png', 'AGImageControls/Assets/Images/*.pdf']
+}
+
 end

@@ -28,10 +28,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		055CA973493B565A05A4A74E /* AGImageControls.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = AGImageControls.podspec; path = ../AGImageControls.podspec; sourceTree = "<group>"; };
+		055CA973493B565A05A4A74E /* AGImageControls.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = AGImageControls.podspec; path = ../AGImageControls.podspec; sourceTree = "<group>"; };
 		0D70CEDFC10D7515310B3D62 /* Pods-AGImageControls_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AGImageControls_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AGImageControls_Tests/Pods-AGImageControls_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		479EEB52EB2D99470C4CF491 /* Pods-AGImageControls_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AGImageControls_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AGImageControls_Example/Pods-AGImageControls_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		4C824A70B1E1837D9B379868 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		4C824A70B1E1837D9B379868 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* AGImageControls_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AGImageControls_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -46,7 +46,7 @@
 		9E2F98BA4927BE01A2D6B40D /* Pods_AGImageControls_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AGImageControls_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F78BA5DC2514EDA57D6F923 /* Pods_AGImageControls_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AGImageControls_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2D124980488AE9FC0E04587 /* Pods-AGImageControls_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AGImageControls_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-AGImageControls_Example/Pods-AGImageControls_Example.release.xcconfig"; sourceTree = "<group>"; };
-		FE2A471661C195203CC713D1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		FE2A471661C195203CC713D1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,10 +215,12 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = B83NCPL58G;
 						LastSwiftMigration = 0820;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = B83NCPL58G;
 						LastSwiftMigration = 0820;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -496,6 +498,7 @@
 			baseConfigurationReference = 479EEB52EB2D99470C4CF491 /* Pods-AGImageControls_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = B83NCPL58G;
 				INFOPLIST_FILE = AGImageControls/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -510,6 +513,7 @@
 			baseConfigurationReference = C2D124980488AE9FC0E04587 /* Pods-AGImageControls_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = B83NCPL58G;
 				INFOPLIST_FILE = AGImageControls/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -523,6 +527,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0D70CEDFC10D7515310B3D62 /* Pods-AGImageControls_Tests.debug.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = B83NCPL58G;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -543,6 +548,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 851A25D93EE8D1524EC6D909 /* Pods-AGImageControls_Tests.release.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = B83NCPL58G;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

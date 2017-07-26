@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import AGImageControls
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var imageView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -19,6 +22,19 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    @IBAction func captureNewImageButtonDidTouch(_ sender: Any) {
+        let camera = AGCameraSnapViewController()
+            camera.delegate = self
+        self.present(camera, animated: true, completion: nil)
+    }
 }
 
+extension ViewController : AGCameraSnapViewControllerDelegate
+{
+    func fetchImage (cameraSnapViewController : AGCameraSnapViewController, image : UIImage)
+    {
+        self.imageView.image = image
+    }
+    
+}

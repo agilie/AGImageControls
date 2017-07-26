@@ -1,25 +1,62 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="AGImageControls_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fKQ-Lx-cnq">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rE2-cE-Pov">
+                                <rect key="frame" x="137" y="597" width="100" height="50"/>
+                                <color key="backgroundColor" red="0.0" green="0.20392156859999999" blue="0.59215686270000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="BkS-b4-wuC"/>
+                                    <constraint firstAttribute="width" constant="100" id="lXt-6V-s0s"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                <state key="normal" title="Capture">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="captureNewImageButtonDidTouch:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Wyx-Uh-7pr"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="fKQ-Lx-cnq" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="CtJ-59-S1i"/>
+                            <constraint firstItem="rE2-cE-Pov" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="W1X-vD-flh"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="fKQ-Lx-cnq" secondAttribute="bottom" id="XIl-p5-Vhh"/>
+                            <constraint firstAttribute="trailing" secondItem="fKQ-Lx-cnq" secondAttribute="trailing" id="Y2C-s8-M3b"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="rE2-cE-Pov" secondAttribute="bottom" constant="20" id="cdA-gp-ry5"/>
+                            <constraint firstItem="fKQ-Lx-cnq" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="ixd-GX-i7k"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="fKQ-Lx-cnq" id="Fpt-u9-T9C"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="40.799999999999997" y="38.23088455772114"/>
         </scene>
     </scenes>
 </document>

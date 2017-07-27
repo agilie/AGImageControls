@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<img src="http://weekly.ascii.jp/elem/000/000/261/261806/Macp11_Metal_1200x.jpg" alt="Metal" title="Metal" width="400"/>
+<img src="http://weekly.ascii.jp/elem/000/000/261/261806/Macp11_Metal_1200x.jpg" alt="Metal" title="Metal" width="100"/>
 </p>
 
 <p>

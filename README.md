@@ -65,6 +65,33 @@ pod "AGImageControls"
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 You can also see an example :
 
+## Usage
+
+1. Import `AGImageControls` module to your `ViewController` class
+
+   ```swift
+   import AGImageControls
+   ```
+
+2. Add `AGCameraSnapViewController` to `ViewController`, then set delegate for it
+
+   ```swift
+   let camera = AGCameraSnapViewController()
+       camera.delegate = self
+   self.present(camera, animated: true, completion: nil)
+   ```
+
+3. Conform your `ViewController` to `AGCameraSnapViewControllerDelegate` protocol
+    
+   ```swift
+   func fetchImage (cameraSnapViewController : AGCameraSnapViewController, image : UIImage) {
+     self.imageView.image = image
+   }
+   ```
+
+4. `AGCameraSnapViewController` works with default implementation.
+
+
 ## Troubleshooting
 Problems? Check the [Issues](https://github.com/agilie/AGImageControls/issues) block
 to find the solution or create an new issue that we will fix asap. Feel free to contribute.

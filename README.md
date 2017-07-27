@@ -46,6 +46,9 @@ AGImageControls allows users to:
 
 - use vector masks to add emotions and accents to the image. You can also turn the elements through 360 degrees and set the desired slope
 
+## Note (Device only)
+
+Make sure that you are running on an actual device (not the simulator) that has an A7 or better chip (an iPhone 5S, iPhone 6, iPhone 6 Plus, iPad Air, or iPad mini (2nd generation))
 
 ## Installation
 

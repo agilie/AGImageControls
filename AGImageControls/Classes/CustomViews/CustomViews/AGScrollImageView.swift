@@ -42,7 +42,7 @@ class AGScrollImageView: UIView {
     
     lazy var scrollView: UIScrollView = { [unowned self] in
         let scrollView = UIScrollView()
-            scrollView.delegate = self
+//            scrollView.delegate = self
         return scrollView
     }()
     
@@ -166,7 +166,7 @@ extension AGScrollImageView
 }
 
 
-
+/*
 extension AGScrollImageView : UIScrollViewDelegate
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -228,3 +228,4 @@ extension AGScrollImageView : UIScrollViewDelegate
         }
     }
 }
+*/

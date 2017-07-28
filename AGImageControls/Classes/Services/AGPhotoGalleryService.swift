@@ -86,9 +86,6 @@ open class AGPhotoGalleryService: UIView {
         if self.assets.count > index {
             var assetImage : UIImage? = nil
             imageManager.requestImage(for: self.assets[index], targetSize: size, contentMode: .aspectFill, options: requestOptions) { image, info in
-                print(info ?? "INFO IMAGE")
-                print(image ?? "IMAGE NILLLL")
-
                 assetImage = image
             }
             return assetImage

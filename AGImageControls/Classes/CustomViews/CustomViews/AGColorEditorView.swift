@@ -78,7 +78,7 @@ class AGColorEditorView: UIView {
     }
     
     func show (toShow : Bool, animated : Bool) {
-        self.showWithAnimation(view: self, isShown: toShow, animated: animated)
+        self.showWithAnimation(isShown: toShow, animated: animated)
     }
     
     func sliderValueChanged (_ slider : UISlider) {
@@ -103,18 +103,6 @@ extension AGColorEditorView
             subview.translatesAutoresizingMaskIntoConstraints = false
         }
         self.setupConstraints()
-    }
-    
-    fileprivate func showWithAnimation (view : UIView, isShown : Bool, animated : Bool) {
-        if (isShown) { view.isHidden = !isShown }
-        
-        UIView.animate(withDuration: animated ? 0.245 : 0.0, animations: {
-            view.alpha = isShown ? 1.0 : 0.0
-        }) { (isFinished) in
-            if (!isShown) {
-                view.isHidden = !isShown
-            }
-        }
     }
     
     fileprivate func updateSliderForItem (item : AGColorEditorItem) {

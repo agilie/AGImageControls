@@ -140,8 +140,7 @@ class AGImageEditingViewController: AGMainViewController {
 
 extension AGImageEditingViewController
 {
-    fileprivate func configureImageEditingViewController()
-    {
+    fileprivate func configureImageEditingViewController() {
         self.view.backgroundColor = self.configurator.mainColor
         
         [self.scrollImageView, self.navigationView,  self.gradientView, self.settingsMenuCollectionView, self.imageAdjustmentView, self.gradientFilterView, self.imageMasksView, self.activityView].forEach {
@@ -151,12 +150,10 @@ extension AGImageEditingViewController
         self.setupConstraints()
     }
     
-    fileprivate func showSettingsMenuForItem (item : AGSettingMenuItemModel)
-    {
+    fileprivate func showSettingsMenuForItem (item : AGSettingMenuItemModel) {
         self.closePreviousMenu(item: self.selectedSettingItem, newItem : item)
 
-        if (self.selectedSettingItem?.type != item.type)
-        {
+        if (self.selectedSettingItem?.type != item.type) {
             //Show Menu Item
             self.selectedSettingItem = item
             self.openNewMenu(item: item)
@@ -167,8 +164,7 @@ extension AGImageEditingViewController
         self.selectedSettingItem = nil
     }
     
-    fileprivate func closePreviousMenu (item : AGSettingMenuItemModel?, newItem : AGSettingMenuItemModel)
-    {
+    fileprivate func closePreviousMenu (item : AGSettingMenuItemModel?, newItem : AGSettingMenuItemModel) {
         guard let currentItem = item else {
             return
         }
@@ -195,8 +191,7 @@ extension AGImageEditingViewController
         }
     }
     
-    fileprivate func openNewMenu (item : AGSettingMenuItemModel)
-    {
+    fileprivate func openNewMenu (item : AGSettingMenuItemModel) {
         switch item.type {
         case .imageAdjustment:
             self.imageAdjustmentView.show(toShow: true, withAnimation: true)
@@ -211,8 +206,7 @@ extension AGImageEditingViewController
         self.gradientView.updateHeight(viewController: self, height: AGSettingsMenuCollectionView.ViewSizes.height + 100)
     }
     
-    fileprivate func showImageEditorViewController (type : AGImageEditorTypes?, editableImage : AGEditableImageView?, imageName : String?)
-    {
+    fileprivate func showImageEditorViewController (type : AGImageEditorTypes?, editableImage : AGEditableImageView?, imageName : String?) {
         self.navigationView.hide(viewController: self)
         self.settingsMenuCollectionView.hide(viewController: self)
         
@@ -222,41 +216,39 @@ extension AGImageEditingViewController
             self.imageEditorViewController = AGImageEditorViewController.createWithType(type: type ?? .icons, imageName : imageName)
             self.imageEditorViewController?.delegate = self
             
-            self.view.insertSubview(self.imageEditorViewController!.view, belowSubview: self.navigationView)
+//            self.view.insertSubview(self.imageEditorViewController!.view, belowSubview: self.navigationView)
+            
+            self.view.insertSubview(self.imageEditorViewController!.view, aboveSubview: self.scrollImageView)
             return
         }
         self.imageEditorViewController?.view.isUserInteractionEnabled = true
         self.imageEditorViewController?.showWith(type: type, editableImage: editableImage, imageName: imageName)
         self.imageEditorViewController?.editorMainMenu.reloadData()
         return
-    }
+    }    
 }
 
 extension AGImageEditingViewController : AGSettingsMenuCollectionViewDataSource
 {
-    func numberOfItemsInSection (section : Int) -> Int
-    {
+    func numberOfItemsInSection (section : Int) -> Int {
         return self.editingService.settingsMenuItems.count
     }
     
-    func menuItemAtIndexPath (indexPath : IndexPath) -> AGSettingMenuItemModel
-    {
+    func menuItemAtIndexPath (indexPath : IndexPath) -> AGSettingMenuItemModel {
         return self.editingService.settingsMenuItems[indexPath.row]
     }
 }
 
 extension AGImageEditingViewController : AGSettingsMenuCollectionViewDelegate
 {
-    func selectedMenuItem (atIndexPath indexPath: IndexPath)
-    {
+    func selectedMenuItem (atIndexPath indexPath: IndexPath) {
         self.showSettingsMenuForItem(item: self.editingService.settingsMenuItems[indexPath.row])
     }
 }
 
 extension AGImageEditingViewController : AGImageAdjustmentViewDelegate
 {
-    func updateImageAdjustment (view : AGImageAdjustmentView, adjustmentItem : AGAdjustmentMenuItem, value : Int)
-    {
+    func updateImageAdjustment (view : AGImageAdjustmentView, adjustmentItem : AGAdjustmentMenuItem, value : Int) {
         switch adjustmentItem.type {
         case .adjustType:
             self.scrollImageView.rotateImage(angle: value)
@@ -266,8 +258,7 @@ extension AGImageEditingViewController : AGImageAdjustmentViewDelegate
         }
     }
     
-    func applyFilterButtonDidTouch (view : AGImageAdjustmentView, adjustmentItem : AGAdjustmentMenuItem, value : Int)
-    {
+    func applyFilterButtonDidTouch (view : AGImageAdjustmentView, adjustmentItem : AGAdjustmentMenuItem, value : Int) {
         self.settingsMenuCollectionView.show(viewController: self)
         self.navigationView.show(viewController: self)
 
@@ -280,16 +271,14 @@ extension AGImageEditingViewController : AGImageAdjustmentViewDelegate
         self.scrollImageView.rotationDidStart(viewController : self)
     }
     
-    func adjustmentMenuItemDidSelect (view : AGImageAdjustmentView)
-    {
+    func adjustmentMenuItemDidSelect (view : AGImageAdjustmentView) {
         self.settingsMenuCollectionView.hide(viewController: self)
         self.navigationView.hide(viewController: self)
         self.gradientView.updateHeight(viewController: self, height: AGSettingsMenuCollectionView.ViewSizes.height)
         
     }
     
-    func cancelFilterButtonDidTouch (view : AGImageAdjustmentView)
-    {
+    func cancelFilterButtonDidTouch (view : AGImageAdjustmentView) {
         self.settingsMenuCollectionView.show(viewController: self)
         self.navigationView.show(viewController: self)
         self.gradientView.updateHeight(viewController: self, height: AGSettingsMenuCollectionView.ViewSizes.height + 100)
@@ -297,8 +286,7 @@ extension AGImageEditingViewController : AGImageAdjustmentViewDelegate
         self.scrollImageView.updateImage(image: self.editingService.applyMetalFilter())
     }
     
-    func cancelAllFiltersButtonDidTouch(view : AGImageAdjustmentView)
-    {
+    func cancelAllFiltersButtonDidTouch(view : AGImageAdjustmentView) {
         self.settingsMenuCollectionView.show(viewController: self)
         self.navigationView.show(viewController: self)
         
@@ -309,27 +297,24 @@ extension AGImageEditingViewController : AGImageAdjustmentViewDelegate
 
 extension AGImageEditingViewController : AGImageAdjustmentViewDataSource
 {
-    func adjustmentMenuItems () -> [AGAdjustmentMenuItem]
-    {
+    func adjustmentMenuItems () -> [AGAdjustmentMenuItem] {
         return self.editingService.adjustmentItems
     }
 }
 
 extension AGImageEditingViewController : AGGradientFilterViewDelegate
 {
-    func updateGradientFilter (view : AGGradientFilterView, gradientFilterItem : AGGradientFilterItemModel, value : Int)
-    {
+    func updateGradientFilter (view : AGGradientFilterView, gradientFilterItem : AGGradientFilterItemModel, value : Int) {
         self.scrollImageView.updateGradientFilterImage(gradientFilterItem: gradientFilterItem)
     }
-    func applyGradientFilterButtonDidTouch (view : AGGradientFilterView, gradientFilterItem : AGGradientFilterItemModel, value : Int)
-    {
+    
+    func applyGradientFilterButtonDidTouch (view : AGGradientFilterView, gradientFilterItem : AGGradientFilterItemModel, value : Int) {
         self.editingService.addGradientFilterImage(gradientFilterItem: gradientFilterItem)
         self.settingsMenuCollectionView.show(viewController: self)
         self.navigationView.show(viewController: self)
     }
     
-    func cancelGradientFilterButtonDidTouch (view : AGGradientFilterView)
-    {
+    func cancelGradientFilterButtonDidTouch (view : AGGradientFilterView) {
         self.scrollImageView.removeGradientFilterImage()
         self.settingsMenuCollectionView.show(viewController: self)
         self.navigationView.show(viewController: self)
@@ -341,8 +326,7 @@ extension AGImageEditingViewController : AGGradientFilterViewDelegate
         self.scrollImageView.updateGradientFilterImage(gradientFilterItem: previousItem)
     }
     
-    func gradientFilterDidChange (view : AGGradientFilterView, newItem : AGGradientFilterItemModel)
-    {
+    func gradientFilterDidChange (view : AGGradientFilterView, newItem : AGGradientFilterItemModel) {
         self.settingsMenuCollectionView.hide(viewController: self)
         self.navigationView.hide(viewController: self)
 
@@ -350,8 +334,7 @@ extension AGImageEditingViewController : AGGradientFilterViewDelegate
         self.scrollImageView.updateGradientFilterImage(gradientFilterItem: newItem)
     }
     
-    func cancelAllGradientFiltersButtonDidTouch(view : AGGradientFilterView)
-    {
+    func cancelAllGradientFiltersButtonDidTouch(view : AGGradientFilterView) {
         self.settingsMenuCollectionView.show(viewController: self)
         self.navigationView.show(viewController: self)
         self.scrollImageView.removeGradientFilterImage()
@@ -362,8 +345,7 @@ extension AGImageEditingViewController : AGGradientFilterViewDelegate
 
 extension AGImageEditingViewController : AGGradientFilterViewDataSource
 {
-    func gradientFilterItems () -> [AGGradientFilterItemModel]
-    {
+    func gradientFilterItems () -> [AGGradientFilterItemModel] {
         return self.editingService.gradientFilterItems
     }
 }
@@ -371,7 +353,6 @@ extension AGImageEditingViewController : AGGradientFilterViewDataSource
 extension AGImageEditingViewController : AGScrollImageViewDataSource
 {
     func image(view: AGScrollImageView) -> UIImage? {
-        print("delegate AGScrollImageViewDataSource")
         return self.editingService.modifiedImage
     }
 }
@@ -396,8 +377,7 @@ extension AGImageEditingViewController : AGImageEditorViewControllerDelegate
         }
     }
 
-    func imageEditorViewControllerDidClose (viewController : AGImageEditorViewController)
-    {
+    func imageEditorViewControllerDidClose (viewController : AGImageEditorViewController) {
         self.navigationView.show(viewController: self)
         self.settingsMenuCollectionView.show(viewController: self)
         if (self.selectedSettingItem != nil) {
@@ -409,21 +389,18 @@ extension AGImageEditingViewController : AGImageEditorViewControllerDelegate
 
 extension AGImageEditingViewController : AGImageMasksViewDataSource
 {
-    func shapesMenuList () -> [String]
-    {
+    func shapesMenuList () -> [String] {
         return self.editingService.shapesMenuList
     }
     
-    func iconsMenuList () -> [String]
-    {
+    func iconsMenuList () -> [String] {
         return self.editingService.iconsMenuList
     }
 }
 
 extension AGImageEditingViewController : AGImageMasksViewDelegate
 {
-    func imageMaskDidSelectAtIndexPath (indexPath : IndexPath?, settingType: AGSettingMenuItemTypes, editorType : AGImageEditorTypes)
-    {
+    func imageMaskDidSelectAtIndexPath (indexPath : IndexPath?, settingType: AGSettingMenuItemTypes, editorType : AGImageEditorTypes) {
         var imageName : String? = nil
         
         if let index = indexPath {
@@ -437,6 +414,10 @@ extension AGImageEditingViewController : AGImageMasksViewDelegate
         self.showSettingsMenuForItem(item: self.editingService.settingsMenuItems[settingType.rawValue])
         self.showImageEditorViewController(type: editorType, editableImage: nil, imageName: imageName)
         self.selectedSettingItem = self.editingService.settingsMenuItems[settingType.rawValue]
+    }
+    
+    func undoLastChanges (settingsType : AGSettingMenuItemTypes) {
+        self.imageEditorViewController?.undoLastChangesForType (type : settingsType)
     }
 }
 

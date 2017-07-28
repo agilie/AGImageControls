@@ -15,6 +15,7 @@ protocol AGImageMasksViewDataSource : class {
 
 protocol AGImageMasksViewDelegate : class {
     func imageMaskDidSelectAtIndexPath (indexPath : IndexPath?, settingType: AGSettingMenuItemTypes, editorType : AGImageEditorTypes)
+    func undoLastChanges (settingsType : AGSettingMenuItemTypes)
 }
 
 class AGImageMasksView: UIView {
@@ -135,6 +136,9 @@ class AGImageMasksView: UIView {
     }
     
     func show (type : AGSettingMenuItemTypes, toShow : Bool, animated : Bool) {
+        [captionTextButton, detailsTextButton, captionTitleLabel, detailsTitleLabel, shapesMenuCollectionView].forEach{
+            $0.isHidden = true
+        }
         if (toShow) { self.type = type }
         self.showWithAnimation(view: self, isShown: toShow, animated: animated)
     }
@@ -145,7 +149,7 @@ class AGImageMasksView: UIView {
     }
     
     func undoButtonDidTouch (_ button : UIButton) {
-        print("undoButtonDidTouch")
+        self.delegate?.undoLastChanges(settingsType: self.type)
     }
     
     func captionTextButtonDidTouch (_ button : UIButton) {

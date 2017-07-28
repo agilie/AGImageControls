@@ -98,7 +98,7 @@ class AGImageAdjustmentView: UIView {
     }
     
     func show (toShow : Bool, withAnimation : Bool) {
-        self.showWithAnimation(view: self, toShow: toShow, animated: withAnimation)
+        self.showWithAnimation(isShown: toShow, animated: withAnimation)
     }
     
     func sliderValueChanged (_ slider : UISlider) {
@@ -138,18 +138,6 @@ extension AGImageAdjustmentView
         self.setupConstraints()
     }
     
-    fileprivate func showWithAnimation (view : UIView, toShow : Bool, animated : Bool)
-    {
-        if (toShow) { view.isHidden = !toShow }
-        UIView.animate(withDuration: animated ? 0.245 : 0.0, animations: {
-            view.alpha = toShow ? 1.0 : 0.0
-        }) { (isFinished) in
-            if (!toShow) {
-                view.isHidden = !toShow
-            }
-        }
-    }
-
     fileprivate func updateSliderForItem (item : AGAdjustmentMenuItem)
     {
         self.slider.maximumValue = item.maxValue
@@ -163,7 +151,8 @@ extension AGImageAdjustmentView
     {
         self.collectionView.hide(isHidden: !isHidden)
         [cancelButton, okButton, sliderValueLabel, slider].forEach {
-            self.showWithAnimation(view: $0, toShow: !isHidden, animated: true)
+            ($0 as! UIView).showWithAnimation(isShown: !isHidden, animated: true)
+//            self.showWithAnimation(view: $0, toShow: !isHidden, animated: true)
         }
     }
     

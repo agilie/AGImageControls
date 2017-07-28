@@ -9,8 +9,15 @@
 import Foundation
 import UIKit
 
+protocol AGImageEditorServiceDelegate : class {
+    func undoLastChanges (imageChangesItem : AGImageChangesItem)
+}
+
+
 class AGImageEditorService : NSObject
 {
+    weak var delegate : AGImageEditorServiceDelegate? = nil
+    
     lazy var captionFontEditorItems : [AGFontEditorItem] =
     {
         let type : AGImageEditorTypes  = .captionText
@@ -58,6 +65,16 @@ class AGImageEditorService : NSObject
                     AGColorEditorItem.createWithColor(color : UIColor.init(hexString : "#FFFF00"))]
             }()
 
+    fileprivate var imageChangesStack : [AGImageChangesItem] = []
+
+    fileprivate var tagCounter : Int = 100
+    
+    var newImageViewTag : Int {
+        get {
+            tagCounter += 1
+            return tagCounter
+        }
+    }
     
     var imageEditorItems : [AGImageEditorMainMenuItem]
         {
@@ -89,4 +106,36 @@ class AGImageEditorService : NSObject
             $0.currentValue = $0.maxValue
         }
     }
+    
+    func addNewImageItem (imageView : AGEditableImageView?) {
+        guard let imageView = imageView else {
+            return
+        }
+        self.imageChangesStack.append(AGImageChangesItem.createWith(imageView: imageView))
+    }
+    
+    func undoLastChangesForType (type : AGSettingMenuItemTypes) {
+        let lastImageChanges : AGImageChangesItem? = self.imageChangesStack.filter{ $0.type == type }.last
+        guard let changes = lastImageChanges else {
+            return
+        }
+        self.delegate?.undoLastChanges(imageChangesItem: changes)
+        if let index = self.imageChangesStack.index(of: changes) {
+            self.imageChangesStack.remove(at: index)
+        }
+    }
+    
+    func removeImageItem (imageView : AGEditableImageView?) {
+        guard let imageView = imageView else {
+            return
+        }
+        let imageViewChangesStack : [AGImageChangesItem] = self.imageChangesStack.filter{ $0.tag == imageView.tag }
+        imageViewChangesStack.forEach {
+            if let index = self.imageChangesStack.index(of: $0) {
+                self.imageChangesStack.remove(at: index)
+            }
+        }
+    }
+    
+    
 }

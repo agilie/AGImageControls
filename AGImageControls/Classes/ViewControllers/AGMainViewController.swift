@@ -85,6 +85,6 @@ extension AGMainViewController : AGNavigationViewDelegate
     
     func navigationViewDoneButtonDidTouch (view : AGNavigationView)
     {
-        print("DONE BUTTON DID TOUCH")
+
     }
 }

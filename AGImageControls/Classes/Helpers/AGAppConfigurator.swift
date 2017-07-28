@@ -18,7 +18,8 @@ public struct AGAppConfigurator {
     public var sliderThumbIcon = "sliderThumb_icon"
     public var snapButtonIcon = "snap_icon"
     public var rotateCameraButtonIcon = "rotateCamera_icon"
-        
+    public var trashButtonIcon = "trashButton_icon"
+
     // MARK: Colors
     public var mainColor = UIColor.colorWith(redColor: 20, greenColor: 13, blueColor: 38, alpha: 1.0)
     

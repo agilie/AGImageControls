@@ -17,12 +17,15 @@ class AGImageEditorViewController: AGMainViewController {
     
     weak var delegate : AGImageEditorViewControllerDelegate?
     
-    var rotateRotationGestureRecognizer : UIRotationGestureRecognizer?  = nil
-    var zoomPinchGestureRecognizer      : UIPinchGestureRecognizer?     = nil
+    var rotationGestureRecognizer  : UIRotationGestureRecognizer?  = nil
+    var pinchGestureRecognizer     : UIPinchGestureRecognizer?     = nil
     
     var imageEditorMainMenuCollectionViewBottomConstraint : NSLayoutConstraint? = nil
     var fontEditorCollectionViewBottomConstraint : NSLayoutConstraint? = nil
 
+    var trashButtonWidthConstraint : NSLayoutConstraint? = nil
+
+    
     var selectedEditableImageView : AGEditableImageView? = nil
     
     var isGesturesEnable : Bool = false
@@ -46,8 +49,15 @@ class AGImageEditorViewController: AGMainViewController {
         }
     }
     
+    struct ViewSizes {
+        static let trashButtonDefaultWidth : CGFloat = 35.0
+        static let trashButtonRightOffset  : CGFloat = 16.0
+        static let trashButtonBottomOffset : CGFloat = 16.0
+    }
+    
     lazy var editorService : AGImageEditorService = { [unowned self] in
         let editorService = AGImageEditorService()
+            editorService.delegate = self
         return editorService
     } ()
     
@@ -80,8 +90,15 @@ class AGImageEditorViewController: AGMainViewController {
         return colorEditorMenu
         }()
     
+    lazy var trashButton : UIButton = { [unowned self] in
+        let trashButton = UIButton()
+            trashButton.setImage(AGAssetsService.getImage(self.configurator.trashButtonIcon), for: .normal)
+        return trashButton
+    }()
+    
     open class func createWithType (type : AGImageEditorTypes, imageName : String?) -> AGImageEditorViewController {
         let controller = AGImageEditorViewController()
+            controller.view.frame = UIScreen.main.bounds
             controller.editorService.currentType = type
             controller.currentEditorType = nil
             controller.createNewEditableImage(imageName: imageName)
@@ -99,6 +116,7 @@ class AGImageEditorViewController: AGMainViewController {
     }
     
     func showWith (type : AGImageEditorTypes?, editableImage : AGEditableImageView? = nil, imageName : String? = nil) {
+        self.trashButton.showWithAnimation(isShown: true, animated: true)
         self.currentEditorType = nil
         self.navigationView.show(viewController: self)
         self.editorMainMenu.show(viewController: self)
@@ -110,8 +128,12 @@ class AGImageEditorViewController: AGMainViewController {
             return
         }
         self.selectedEditableImageView = editableImage
+        self.selectedEditableImageView?.updateLastPosition()
     }
-
+    
+    func undoLastChangesForType (type : AGSettingMenuItemTypes) {
+        self.editorService.undoLastChangesForType(type: type)
+    }
 }
 
 extension AGImageEditorViewController
@@ -123,12 +145,11 @@ extension AGImageEditorViewController
         self.colorEditorMenu.show(toShow: isColorMenuActive, animated: true)
     }
     
-    fileprivate func configureImageEditorViewController()
-    {
+    fileprivate func configureImageEditorViewController() {
         self.view.backgroundColor = .clear
         self.navigationView.doneButton.setTitle(self.configurator.okButtonTitle, for: .normal)
         
-        for subview : UIView in [self.imageView, self.gradientView, self.editorMainMenu, self.fontEditorMenu, colorEditorMenu, self.navigationView]
+        for subview : UIView in [self.imageView, self.gradientView, self.editorMainMenu, self.fontEditorMenu, colorEditorMenu, self.navigationView, self.trashButton]
         {
             subview.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(subview)
@@ -136,24 +157,13 @@ extension AGImageEditorViewController
         self.setupConstraints()
     }
     
-    override func navigationViewDoneButtonDidTouch (view : AGNavigationView)
-    {
-        self.selectedEditableImageView?.lastPosition = self.selectedEditableImageView?.newPosition
-        self.selectedEditableImageView?.lastMaskColor = self.selectedEditableImageView?.maskColor
+    override func navigationViewDoneButtonDidTouch (view : AGNavigationView) {
+        self.editorService.addNewImageItem(imageView: self.selectedEditableImageView)
         self.close()
     }
 
-    
     override func navigationViewBackButtonDidTouch(view: AGNavigationView) {
-        if (self.selectedEditableImageView?.lastPosition == nil){
-            self.selectedEditableImageView?.removeFromSuperview()
-        } else {
-            self.selectedEditableImageView?.newPosition = self.selectedEditableImageView?.lastPosition
-            self.selectedEditableImageView?.maskColor = self.selectedEditableImageView?.lastMaskColor ?? AGColorEditorItem()
-            self.selectedEditableImageView?.updateImagePosition()
-            self.transformImage()
-        }
-        
+        self.selectedEditableImageView?.undoImageChanges()
         self.close()
     }
     
@@ -163,6 +173,7 @@ extension AGImageEditorViewController
         
         self.navigationView.hide(viewController: self)
         self.editorMainMenu.hide(viewController: self)
+        self.trashButton.showWithAnimation(isShown: false, animated: true)
         
         self.closeAllSubviews()
         self.delegate?.imageEditorViewControllerDidClose(viewController: self)
@@ -181,8 +192,7 @@ extension AGImageEditorViewController
         switch self.editorService.currentType {
         case .icons, .shapes:
             guard let name = imageName else { return }
-            
-            self.selectedEditableImageView = AGEditableImageView.createWithImage(imageName: name, type: self.editorService.currentType)
+            self.selectedEditableImageView = AGEditableImageView.createWithImage(imageName: name, type: self.editorService.currentType, tag: self.editorService.newImageViewTag)
             self.selectedEditableImageView?.delegate = self
             self.imageView.addSubview(self.selectedEditableImageView!)
             return
@@ -193,29 +203,28 @@ extension AGImageEditorViewController
     
     //MARK: Gesture recognizers methods
     func setupGestureReconizers () {
-        
-        if self.rotateRotationGestureRecognizer == nil {
-            self.rotateRotationGestureRecognizer = UIRotationGestureRecognizer.init(target: self, action: #selector(AGImageEditorViewController.rotateEditableImageView(_:)))
-            self.rotateRotationGestureRecognizer!.delegate = self
-            self.view.addGestureRecognizer(self.rotateRotationGestureRecognizer!)
+        if self.rotationGestureRecognizer == nil {
+            self.rotationGestureRecognizer = UIRotationGestureRecognizer.init(target: self, action: #selector(AGImageEditorViewController.rotateEditableImageView(_:)))
+            self.rotationGestureRecognizer!.delegate = self
+            self.view.addGestureRecognizer(self.rotationGestureRecognizer!)
         }
         
-        if self.zoomPinchGestureRecognizer == nil {
-            self.zoomPinchGestureRecognizer = UIPinchGestureRecognizer.init(target: self, action:  #selector(AGImageEditorViewController.zoomEditableImageView(_:)))
-            self.zoomPinchGestureRecognizer!.delegate = self
-            self.view.addGestureRecognizer(self.zoomPinchGestureRecognizer!)
+        if self.pinchGestureRecognizer == nil {
+            self.pinchGestureRecognizer = UIPinchGestureRecognizer.init(target: self, action:  #selector(AGImageEditorViewController.zoomEditableImageView(_:)))
+            self.pinchGestureRecognizer!.delegate = self
+            self.view.addGestureRecognizer(self.pinchGestureRecognizer!)
         }
     }
     
     func removeAllGestureRecognizers () {
-        if let currentRotateRotationGestureRecognizer = self.rotateRotationGestureRecognizer {
+        if let currentRotateRotationGestureRecognizer = self.rotationGestureRecognizer {
             self.view.removeGestureRecognizer(currentRotateRotationGestureRecognizer)
-            self.rotateRotationGestureRecognizer = nil
+            self.rotationGestureRecognizer = nil
         }
         
-        if let currentZoomPinchGestureRecognizer = self.zoomPinchGestureRecognizer {
+        if let currentZoomPinchGestureRecognizer = self.pinchGestureRecognizer {
             self.view.removeGestureRecognizer(currentZoomPinchGestureRecognizer)
-            self.zoomPinchGestureRecognizer = nil
+            self.pinchGestureRecognizer = nil
         }
     }
     
@@ -223,15 +232,10 @@ extension AGImageEditorViewController
         switch rotateRotationGestureRecognizer.state {
         case .began:
             rotateRotationGestureRecognizer.rotation = self.selectedEditableImageView?.newPosition?.rotateAngle ?? 0
-            return
         case .changed:
             self.selectedEditableImageView?.newPosition?.rotateAngle = rotateRotationGestureRecognizer.rotation
-            self.transformImage()
-            return
         case .ended:
-            self.selectedEditableImageView?.newPosition?.rotateAngle = rotateRotationGestureRecognizer.rotation
             rotateRotationGestureRecognizer.rotation = 0
-            return
         default:
             return
         }
@@ -241,24 +245,33 @@ extension AGImageEditorViewController
         switch zoomPinchGestureRecognizer.state {
         case .began:
             zoomPinchGestureRecognizer.scale = self.selectedEditableImageView?.newPosition?.scale ?? 1
-            return
         case .changed:
             self.selectedEditableImageView?.newPosition?.scale = zoomPinchGestureRecognizer.scale
-            self.transformImage()
-            return
         case .ended:
-            self.selectedEditableImageView?.newPosition?.scale = zoomPinchGestureRecognizer.scale
             self.selectedEditableImageView?.updateImage()
             zoomPinchGestureRecognizer.scale = 1
-
-            return
         default:
             return
         }
     }
     
-    func transformImage () {
-        self.selectedEditableImageView?.transform = CGAffineTransform.identity.rotated(by: self.selectedEditableImageView?.newPosition?.rotateAngle ?? 0).scaledBy(x: self.selectedEditableImageView?.newPosition?.scale ?? 1, y: self.selectedEditableImageView?.newPosition?.scale ?? 1)
+    func changeTrashButtonSize (isActive : Bool) {
+        self.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.245, animations: {
+            self.trashButtonWidthConstraint!.constant = isActive ? ViewSizes.trashButtonDefaultWidth * 2 : ViewSizes.trashButtonDefaultWidth
+            self.view.layoutIfNeeded()
+        })
+    }
+}
+
+extension AGImageEditorViewController : AGImageEditorServiceDelegate
+{
+    func undoLastChanges (imageChangesItem : AGImageChangesItem) {
+        if let imageView = self.imageView.subviews.viewWithTag(tag: imageChangesItem.tag) as? AGEditableImageView {
+            imageView.lastPosition = imageChangesItem.position
+            imageView.lastMaskColor = imageChangesItem.mask
+            imageView.undoImageChanges()
+        }
     }
 }
 
@@ -290,7 +303,7 @@ extension AGImageEditorViewController : AGImageEditorMainMenuCollectionViewDeleg
 extension AGImageEditorViewController : AGFontEditorViewDelegate
 {
     func updateFont (view : AGFontEditorView, newFont : AGFontEditorItem) {
-        print(newFont.fullName)
+//        print(newFont.fullName)
     }
     
     func fontEditorDidClose (view : AGFontEditorView) {
@@ -334,6 +347,25 @@ extension AGImageEditorViewController : AGEditableImageViewDelegate
         if (self.selectedEditableImageView == nil) {
             self.delegate?.editableImageDidSelect(viewController: self, editableImage: imageView)
         }
+    }
+    
+    func startMoving (imageView : AGEditableImageView) {
+        self.changeTrashButtonSize(isActive: true)
+    }
+    
+    func endMoving (imageView : AGEditableImageView, touchLocation : CGPoint) {
+        if self.trashButton.frame.contains(touchLocation) {
+            self.editorService.removeImageItem(imageView: self.selectedEditableImageView)
+            self.selectedEditableImageView?.removeFromSuperview()
+            self.close()
+        }
+        self.changeTrashButtonSize(isActive: false)
+    }
+}
+
+extension Array where Element: UIView {
+    func viewWithTag(tag: Int) -> UIView? {
+        return filter { $0.tag == tag }.first
     }
 }
 

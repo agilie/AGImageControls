@@ -605,6 +605,26 @@ extension AGImageEditorViewController
                                                   multiplier: 1, constant: 0))
         }
 
+        
+        view.addConstraint(NSLayoutConstraint(item: view , attribute: .bottom,
+                                              relatedBy: .equal, toItem: trashButton, attribute: .bottom,
+                                              multiplier: 1, constant: AGImageEditorViewController.ViewSizes.trashButtonBottomOffset + AGImageEditorMainMenuCollectionView.ViewSizes.height))
+
+        
+        view.addConstraint(NSLayoutConstraint(item: view , attribute: .right,
+                                              relatedBy: .equal, toItem: trashButton, attribute: .right,
+                                              multiplier: 1, constant: AGImageEditorViewController.ViewSizes.trashButtonRightOffset))
+
+        trashButtonWidthConstraint = NSLayoutConstraint(item: trashButton, attribute: .width,
+                                                          relatedBy: .equal, toItem: nil, attribute: .notAnAttribute,
+                                                          multiplier: 1, constant: AGImageEditorViewController.ViewSizes.trashButtonDefaultWidth)
+
+        view.addConstraint(trashButtonWidthConstraint!)
+        
+        view.addConstraint(NSLayoutConstraint(item: trashButton, attribute: .height,
+                                              relatedBy: .equal, toItem: trashButton, attribute: .width,
+                                              multiplier: 1, constant: 0))
+        
     }
 }
 

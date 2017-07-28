@@ -11,6 +11,8 @@ import UIKit
 
 protocol AGEditableImageViewDelegate : class {
     func imageDidTouch (imageView : AGEditableImageView)
+    func startMoving (imageView : AGEditableImageView)
+    func endMoving (imageView : AGEditableImageView, touchLocation : CGPoint)
 }
 
 internal struct AGPositionStruct {
@@ -44,6 +46,12 @@ class AGEditableImageView: UIImageView, UIGestureRecognizerDelegate {
     var lastPosition : AGPositionStruct? = nil
     
     var newPosition : AGPositionStruct? = nil
+    {
+        didSet
+        {
+            self.transform = CGAffineTransform.identity.rotated(by: self.newPosition?.rotateAngle ?? 0).scaledBy(x: self.newPosition?.scale ?? 1, y: self.newPosition?.scale ?? 1)
+        }
+    }
     
     var isActive : Bool = true
 //    {
@@ -55,7 +63,20 @@ class AGEditableImageView: UIImageView, UIGestureRecognizerDelegate {
     var imageName : String = ""
     
     var type : AGImageEditorTypes = .icons
-    
+   
+    var settingsType : AGSettingMenuItemTypes {
+        get {
+            switch self.type {
+            case .icons:
+                return .iconsAdjustment
+            case .shapes:
+                return .shapesMaskAdjustment
+            default:
+                return .textAdjustment
+            }
+        }
+    }
+
     let imageDefaultSize : CGSize = CGSize(width : 50, height : 50)
     
     func updateImage (scale: CGFloat = 1.0)
@@ -76,7 +97,7 @@ class AGEditableImageView: UIImageView, UIGestureRecognizerDelegate {
         self.maskColor = colorItem
     }
     
-    class func createWithImage (imageName : String, type : AGImageEditorTypes, size : CGSize = CGSize(width: 78.0, height: 100), center : CGPoint = CGPoint(x: 59.0, y: 154.0), scale : CGFloat = 1.0, color : UIColor = .white) -> AGEditableImageView
+    class func createWithImage (imageName : String, type : AGImageEditorTypes, tag : Int, size : CGSize = CGSize(width: 78.0, height: 100), center : CGPoint = CGPoint(x: 59.0, y: 154.0), scale : CGFloat = 1.0, color : UIColor = .white) -> AGEditableImageView
     {
         let newImageView = AGEditableImageView()
         
@@ -88,8 +109,8 @@ class AGEditableImageView: UIImageView, UIGestureRecognizerDelegate {
         newImageView.type = type
         newImageView.frame.size = size
         newImageView.center = center
-        newImageView.lastPosition = AGPositionStruct.init(center: center, scale: 1.0, angle: 0.0)
         newImageView.newPosition = AGPositionStruct.init(center: center, scale: 1.0, angle: 0.0)
+        newImageView.tag = tag
         
         newImageView.isUserInteractionEnabled = true
 
@@ -117,18 +138,33 @@ class AGEditableImageView: UIImageView, UIGestureRecognizerDelegate {
         let touchLocation = gestureRecognizer.location(in: self.superview)
         
         switch gestureRecognizer.state {
+        case .began:
+            self.delegate?.startMoving(imageView: self)
         case .changed:
             self.center = touchLocation
             self.newPosition?.centerPoint = touchLocation
-            return
+        case .ended:
+            self.delegate?.endMoving(imageView: self, touchLocation: touchLocation)
         default:
             return
         }
     }
     
-    func updateImagePosition ()
-    {
+    func undoImageChanges () {
+        if (self.lastPosition == nil)
+        {
+            self.removeFromSuperview()
+            return
+        }
+        self.newPosition = self.lastPosition
+        self.maskColor = self.lastMaskColor ?? AGColorEditorItem()
         self.center = self.newPosition?.centerPoint ?? CGPoint.zero
         self.updateImage()
     }
+    
+    func updateLastPosition() {
+        self.lastPosition = self.newPosition
+        self.lastMaskColor = self.maskColor
+    }
+
 }

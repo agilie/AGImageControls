@@ -99,7 +99,7 @@ class AGGradientFilterView: UIView {
     }
     
     func needToShowWithAnimation (isShown : Bool, animated : Bool) {
-        self.showWithAnimation(view: self, isShown: isShown, animated: animated)
+        self.showWithAnimation(isShown: isShown, animated: animated)
     }
     
     func sliderValueChanged (_ slider : UISlider) {
@@ -138,20 +138,7 @@ extension AGGradientFilterView
         }
         self.setupConstraints()
     }
-    
-    fileprivate func showWithAnimation (view : UIView, isShown : Bool, animated : Bool)
-    {
-        if (isShown) { view.isHidden = !isShown }
         
-        UIView.animate(withDuration: animated ? 0.245 : 0.0, animations: {
-            view.alpha = isShown ? 1.0 : 0.0
-        }) { (isFinished) in
-            if (!isShown) {
-                view.isHidden = !isShown
-            }
-        }
-    }
-    
     fileprivate func updateSliderForItem (item : AGGradientFilterItemModel)
     {
         self.slider.maximumValue = item.maxValue
@@ -165,7 +152,7 @@ extension AGGradientFilterView
     {
         self.collectionView.hide(isHidden: !isHidden)
         [okButton, cancelButton, sliderValueLabel, slider].forEach {
-            self.showWithAnimation(view: $0, isShown: !isHidden, animated: true)
+            ($0 as! UIView).showWithAnimation(isShown: !isHidden, animated: true)
         }
     }
     

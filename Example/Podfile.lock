@@ -1,5 +1,5 @@
 PODS:
-  - AGImageControls (0.1.0)
+  - AGImageControls (0.1.1)
 
 DEPENDENCIES:
   - AGImageControls (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  AGImageControls: b5979f67f5d63644bc1a379fa5544e4f306f9029
+  AGImageControls: 4d3489c24f5b959edc02c0d1477a5546198a05de
 
 PODFILE CHECKSUM: c99424506658a95cffec3e93fbf54fa0fb4685f1
 

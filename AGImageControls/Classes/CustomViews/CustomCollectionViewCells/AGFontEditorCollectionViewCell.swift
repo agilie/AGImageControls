@@ -40,7 +40,7 @@ class AGFontEditorCollectionViewCell: UICollectionViewCell, AGCellInterface {
     }
     
     func configureForMenuItem (menuItem: AGFontEditorItem) {
-        self.fontNameLabel.font = menuItem.font?.withSize(self.fontNameLabel.font.pointSize)
+        self.fontNameLabel.font = menuItem.font.withSize(self.fontNameLabel.font.pointSize)
         self.fontNameLabel.text = menuItem.shortName
     }
 }

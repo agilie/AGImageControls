@@ -46,7 +46,7 @@ class AGShapesMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
     }
     
     func configureWith (imageName: String) {
-        self.shapeImageView.image = AGAssetsService.getImage(imageName)
+        self.shapeImageView.image = AGAppResourcesService.getImage(imageName)
     }
 
 }

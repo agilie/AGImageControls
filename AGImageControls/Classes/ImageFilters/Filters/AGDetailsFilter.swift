@@ -46,12 +46,6 @@ internal class AGDetailsFilter: AGImageFilter {
                 weights[i] = weightsMatrix[i] * radius
             }
         }
-/*
-//        for i in 0..<weights.count
-//        {
-//            weights[i] = i % 2 != 0 ? -radius : i != 4 ? -radius/2 :  1 + 6 * radius
-//        }
-*/
         
         #if !(arch(i386) || arch(x86_64)) && os(iOS)
             let sharpen = MPSImageConvolution(device: device.device,

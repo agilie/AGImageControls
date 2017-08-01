@@ -23,7 +23,7 @@ class AGFontEditorItem : NSObject {
             case .captionText:
                 return 50.0
             default:
-                return 14.0
+                return 28.0
             }
         }
     }
@@ -33,9 +33,9 @@ class AGFontEditorItem : NSObject {
         get {
             switch self.type {
             case .captionText:
-                return 125.0
+                return 200.0
             default:
-                return 38.0
+                return 100.0
             }
         }
     }
@@ -47,13 +47,18 @@ class AGFontEditorItem : NSObject {
         }
     }
 
+    var type : AGImageEditorTypes = .captionText
     
     var isSelected  : Bool    = false
     
-    var font        : UIFont? = nil
+    lazy var font : UIFont =
+        {
+            return UIFont.ubuntuMediumFontWithSize(size: self.currentSize)
+    }()
     
-    var type : AGImageEditorTypes = .captionText
-    
+    class func createWithType (type : AGImageEditorTypes) -> AGFontEditorItem {
+        return AGFontEditorItem.patuaOneRegularItem(type: type)
+    }
     
     class func antonRegularItem (type : AGImageEditorTypes) -> AGFontEditorItem  {
         let newItem = AGFontEditorItem()
@@ -64,8 +69,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "Anton-Regular", size: newItem.currentSize)
-            //?? UIFont.systemFont(ofSize: newItem.currentSize)
+        newItem.font = UIFont.init(name: "Anton-Regular", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -79,7 +83,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "CrimsonText-Bold", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "CrimsonText-Bold", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -93,7 +97,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "HelveticaNeue", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "HelveticaNeue", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -107,7 +111,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "MavenPro-Bold", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "MavenPro-Bold", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -121,7 +125,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "Montserrat-Bold", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "Montserrat-Bold", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -135,7 +139,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "OpenSans-Bold", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "OpenSans-Bold", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -149,7 +153,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "PatuaOne-Regular", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "PatuaOne-Regular", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -163,7 +167,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "Poppins-Bold", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "Poppins-Bold", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -177,7 +181,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "Poppins-Regular", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "Poppins-Regular", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -191,7 +195,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "Raleway-Bold", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "Raleway-Bold", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -205,7 +209,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "Rubik-Regular", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "Rubik-Regular", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -219,7 +223,7 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "TitilliumWeb-Regular", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "TitilliumWeb-Regular", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
     }
@@ -233,9 +237,20 @@ class AGFontEditorItem : NSObject {
         newItem.type = type
         newItem.currentSize = newItem.minFontSize
         
-        newItem.font = UIFont.init(name: "TitilliumWeb-Bold", size: newItem.currentSize)
+        newItem.font = UIFont.init(name: "TitilliumWeb-Bold", size: newItem.currentSize) ?? UIFont.ubuntuMediumFontWithSize(size: newItem.currentSize)
         
         return newItem
+    }
+    
+    func copyItem () -> AGFontEditorItem {
+        let item = AGFontEditorItem()
+            item.fullName = self.fullName
+            item.shortName = self.shortName
+            item.type = self.type
+            item.currentSize = self.currentSize
+            item.font = self.font
+        
+        return item
     }
 
 }

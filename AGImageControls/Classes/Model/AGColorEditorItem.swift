@@ -22,4 +22,14 @@ class AGColorEditorItem : AGMenuItemModel {
         
         return newItem
     }
+    
+    func copyItem () -> AGColorEditorItem {
+        let newItem = AGColorEditorItem()
+            newItem.color = self.color
+            newItem.minValue = self.minValue
+            newItem.currentValue = self.currentValue
+
+        return newItem
+    }
+    
 }

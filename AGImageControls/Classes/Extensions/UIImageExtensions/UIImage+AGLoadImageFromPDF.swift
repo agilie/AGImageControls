@@ -12,19 +12,7 @@ import UIKit
 extension UIImage {
     
     static func fromPDF(filename: String, size: CGSize, scale : CGFloat, color : UIColor = .white, colorAlpha : CGFloat = 1.0) -> UIImage? {
-        
-        var bundle = Bundle(for: AGAssetsService.self)
-        if let resource = bundle.resourcePath, let resourceBundle = Bundle(path: resource + "/AGImageControls.bundle") {
-            bundle = resourceBundle
-        }
-        guard let path = bundle.path(forResource: filename, ofType: "pdf") else { return nil }
-
-        
-        
-        
-        let url = URL(fileURLWithPath: path)
-        guard let document = CGPDFDocument(url as CFURL) else { return nil }
-        guard let page = document.page(at: 1) else { return nil }
+        guard let page = AGAppResourcesService.getPDFFile(filename) else { return nil }
         
         let imageRect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         if #available(iOS 10.0, *) {

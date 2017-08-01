@@ -67,6 +67,19 @@ class AGColorEditorView: UIView {
         }()
     
     var selectedItem : AGColorEditorItem? = nil
+    {
+        didSet {
+            guard let item = selectedItem else { return }
+            if (!self.isHidden) { return }
+            let colors = self.dataSource?.colorEditorMenuItems().filter{ $0.color == item.color }
+            if let firstColor = colors?.first {
+                firstColor.currentValue = item.currentValue
+                if let index = self.dataSource?.colorEditorMenuItems().index(of: firstColor) {
+                    self.collectionView.scrollToItem(at: IndexPath.init(row: index, section: 0), at: .centeredHorizontally, animated: !self.isHidden)
+                }
+            }
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)

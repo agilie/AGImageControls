@@ -93,10 +93,8 @@ class AGImageEditorService : NSObject
         }
     }
     
-    func unselectAllImageEditorItems ()
-    {
-        for item in self.imageEditorItemList
-        {
+    func unselectAllImageEditorItems () {
+        for item in self.imageEditorItemList {
             item.isSelected = false
         }
     }
@@ -106,7 +104,7 @@ class AGImageEditorService : NSObject
             $0.currentValue = $0.maxValue
         }
     }
-    
+        
     func addNewImageItem (imageView : AGEditableImageView?) {
         guard let imageView = imageView else {
             return

@@ -45,6 +45,6 @@ class AGGradientFilterCollectionViewCell: UICollectionViewCell, AGCellInterface 
     }
     
     func configureForMenuItem (menuItem: AGGradientFilterItemModel) {
-        self.imageView.image = AGAssetsService.getImage(menuItem.iconName)
+        self.imageView.image = AGAppResourcesService.getImage(menuItem.iconName)
     }
 }

@@ -45,7 +45,7 @@ class AGSettingsMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
     }()
     
     open class func cellSize () -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width / 4, height : UIScreen.main.bounds.width / 4)
+        return CGSize(width: UIScreen.main.bounds.width / 5, height : UIScreen.main.bounds.width / 5)
     }
     
     override init(frame: CGRect) {
@@ -62,7 +62,7 @@ class AGSettingsMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
     }
     
     func configureForSettingMenuItem (menuItem: AGSettingMenuItemModel) {
-        self.imageView.image = AGAssetsService.getImage(menuItem.iconName)
+        self.imageView.image = AGAppResourcesService.getImage(menuItem.iconName)
     }
     
     func select () {

@@ -78,8 +78,7 @@ open class AGMainViewController: UIViewController {
 
 extension AGMainViewController : AGNavigationViewDelegate
 {
-    func navigationViewBackButtonDidTouch (view : AGNavigationView)
-    {
+    func navigationViewBackButtonDidTouch (view : AGNavigationView) {
         self.dismiss(animated: true, completion: nil)
     }
     

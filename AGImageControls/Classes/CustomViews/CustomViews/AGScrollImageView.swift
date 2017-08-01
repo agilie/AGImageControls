@@ -70,7 +70,7 @@ class AGScrollImageView: UIView {
     func updateGradientFilterImage (gradientFilterItem : AGGradientFilterItemModel) {
         if self.gradientImageView.image == nil
         {
-            self.gradientImageView.image = AGAssetsService.getImage(gradientFilterItem.imageName)
+            self.gradientImageView.image = AGAppResourcesService.getImage(gradientFilterItem.imageName)
         }
         self.gradientImageView.alpha = CGFloat(gradientFilterItem.currentValue / 100.0)
     }
@@ -164,68 +164,3 @@ extension AGScrollImageView
                                                    height: self.imageView.bounds.size.height), animated: false)
     }
 }
-
-
-/*
-extension AGScrollImageView : UIScrollViewDelegate
-{
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        var scrollVisibleRect = CGRect.zero
-            scrollVisibleRect.origin = scrollView.contentOffset
-            scrollVisibleRect.size = scrollView.frame.size
-
-        let topLeftPoint = scrollVisibleRect.origin
-        let topRightPoint = CGPoint (x : scrollVisibleRect.origin.x + scrollVisibleRect.size.width, y: scrollVisibleRect.origin.y)
-        let bottomLeftPoint = CGPoint (x : scrollVisibleRect.origin.x, y: scrollVisibleRect.origin.y + scrollVisibleRect.size.height)
-        let bottomRightPoint = CGPoint (x : scrollVisibleRect.origin.x + scrollVisibleRect.size.width, y: scrollVisibleRect.origin.y + scrollVisibleRect.size.height)
-        
-        let triangle1 : AGTriangleStruct = AGTriangleStruct.init(point1: self.imageView.newTopLeft(),
-                                                                 point2: self.imageView.newBottomLeft(),
-                                                                 point3: self.imageView.topLeft())
-        
-        
-        let triangle2 : AGTriangleStruct = AGTriangleStruct.init(point1: self.imageView.bottomLeft() ,
-                                                                 point2: self.imageView.newBottomLeft(),
-                                                                 point3: self.imageView.newBottomRight())
-        
-        
-        let triangle3 : AGTriangleStruct = AGTriangleStruct.init(point1: self.imageView.topRight(),
-                                                                 point2: self.imageView.newTopRight(),
-                                                                 point3: self.imageView.newTopLeft())
-        
-        let triangle4 : AGTriangleStruct = AGTriangleStruct.init(point1: self.imageView.bottomRight(),
-                                                                 point2: self.imageView.newBottomRight(),
-                                                                 point3: self.imageView.newTopRight())
-        
-        if (AGMathHelper.isTriangleContainsPoint(triangle: triangle1, point: topLeftPoint)) ||
-            (AGMathHelper.isTriangleContainsPoint(triangle: triangle2, point: bottomLeftPoint)) ||
-            (AGMathHelper.isTriangleContainsPoint(triangle: triangle3, point: topRightPoint)) ||
-            (AGMathHelper.isTriangleContainsPoint(triangle: triangle4, point: bottomRightPoint))
-        {
-            self.needToScroll = true
-        } else {
-            self.needToScroll = false
-            self.lastVisibleRect = scrollVisibleRect
-        }
-    }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if self.needToScroll {
-            self.scrollView.setContentOffset(self.lastVisibleRect.origin, animated: false)
-        }
-    }
-    
-    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) { // called on finger up as we are moving
-        if self.needToScroll {
-            self.scrollView.setContentOffset(self.lastVisibleRect.origin, animated: true)
-        }
-
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if self.needToScroll {
-            self.scrollView.setContentOffset(self.lastVisibleRect.origin, animated: true)
-        }
-    }
-}
-*/

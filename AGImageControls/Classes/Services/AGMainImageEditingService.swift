@@ -39,7 +39,7 @@ class AGMainImageEditingService : NSObject
     lazy var settingsMenuItems : [AGSettingMenuItemModel] = {
         return [AGSettingMenuItemModel.imageAdjustmentMenuItem(),
                 AGSettingMenuItemModel.imageFilterMaskAdjustmentMenuItem(),
-//                AGSettingMenuItemModel.textAdjustmentMenuItem(),
+                AGSettingMenuItemModel.textAdjustmentMenuItem(),
                 AGSettingMenuItemModel.shapesMaskAdjustmentMenuItem(),
                 AGSettingMenuItemModel.imageMaskAdjustmentMenuItem()]
     }()
@@ -336,7 +336,7 @@ class AGMainImageEditingService : NSObject
         
         if (self.gradientImage == nil)
         {
-            self.gradientImage = UIImage.resizeImage(image: AGAssetsService.getImage(gradientFilterItem.imageName),
+            self.gradientImage = UIImage.resizeImage(image: AGAppResourcesService.getImage(gradientFilterItem.imageName),
                                                     targetSize: modImage.size,
                                                     alpha: CGFloat(gradientFilterItem.currentValue / 100.0))
         }

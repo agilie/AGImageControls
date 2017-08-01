@@ -38,7 +38,7 @@ open class AGCameraBottomView: UIView {
         let snapButton = UIButton()
             snapButton.frame.size = CGSize(width: 72, height: 72)
             snapButton.backgroundColor = .clear
-            snapButton.setImage(AGAssetsService.getImage(self.configurator.snapButtonIcon), for: .normal)
+            snapButton.setImage(AGAppResourcesService.getImage(self.configurator.snapButtonIcon), for: .normal)
             snapButton.imageView?.contentMode = .scaleAspectFill
             snapButton.addTarget(self, action: #selector(snapButtonDidPress(_:)), for: .touchUpInside)
 
@@ -48,7 +48,7 @@ open class AGCameraBottomView: UIView {
     open lazy var rotateCameraButton: UIButton = { [unowned self] in
         let button = UIButton(type: .custom)
             button.frame.size = CGSize(width: 64, height: 64)
-            button.setImage(AGAssetsService.getImage(self.configurator.rotateCameraButtonIcon), for: .normal)
+            button.setImage(AGAppResourcesService.getImage(self.configurator.rotateCameraButtonIcon), for: .normal)
             button.addTarget(self, action: #selector(rotateCameraButtonDidPress(_:)), for: .touchUpInside)
         
         return button

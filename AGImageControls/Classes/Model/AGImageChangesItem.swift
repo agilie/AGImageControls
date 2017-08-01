@@ -14,6 +14,8 @@ class AGImageChangesItem : NSObject {
     var position : AGPositionStruct? = nil
     var mask     : AGColorEditorItem? = nil
     var type     : AGSettingMenuItemTypes = .textAdjustment
+    var font     : AGFontEditorItem? = nil
+    var text     : String? = nil
     
     class func createWith (imageView : AGEditableImageView) -> AGImageChangesItem {
         let item = AGImageChangesItem()
@@ -21,7 +23,9 @@ class AGImageChangesItem : NSObject {
             item.position = imageView.lastPosition
             item.mask = imageView.lastMaskColor
             item.type = imageView.settingsType
-
+            item.font = imageView.lastFont
+            item.text = imageView.lastText
+        
         return item
     }    
 }

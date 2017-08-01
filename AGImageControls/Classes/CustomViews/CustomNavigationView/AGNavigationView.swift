@@ -37,7 +37,7 @@ class AGNavigationView: UIView {
 
     lazy var backButton: UIButton = { [unowned self] in
         let button = UIButton()
-            button.setImage(AGAssetsService.getImage(self.configurator.backButtonIcon), for: .normal)
+            button.setImage(AGAppResourcesService.getImage(self.configurator.backButtonIcon), for: .normal)
             button.addTarget(self, action: #selector(backButtonDidTouch(_:)), for: .touchUpInside)
             button.contentHorizontalAlignment = .center
         return button

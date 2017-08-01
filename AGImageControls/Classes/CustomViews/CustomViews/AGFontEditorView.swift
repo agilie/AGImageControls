@@ -49,6 +49,18 @@ class AGFontEditorView: UIView {
         }()
     
     var selectedItem : AGFontEditorItem? = nil
+    {
+        didSet {
+            guard let item = selectedItem else { return }
+            if (!self.isHidden) { return }
+            let fonts = self.dataSource?.fontEditorItems().filter{ $0.fullName == item.fullName }
+            if let firstFont = fonts?.first {
+                if let index = self.dataSource?.fontEditorItems().index(of: firstFont) {
+                    self.collectionView.scrollToItem(at: IndexPath.init(row: index, section: 0), at: .centeredHorizontally, animated: !self.isHidden)
+                }
+            }
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -98,7 +110,7 @@ extension AGFontEditorView
     
     fileprivate func updateTitleLabelFor(fontEditorItem : AGFontEditorItem) {
         self.titleLabel.text = fontEditorItem.fullName
-        self.titleLabel.font = fontEditorItem.font?.withSize(self.titleLabel.font.pointSize)
+        self.titleLabel.font = fontEditorItem.font.withSize(self.titleLabel.font.pointSize)
         self.delegate?.updateFont(view: self, newFont: fontEditorItem)
     }
 }

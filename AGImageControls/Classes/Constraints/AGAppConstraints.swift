@@ -625,6 +625,8 @@ extension AGImageEditorViewController
                                               relatedBy: .equal, toItem: trashButton, attribute: .width,
                                               multiplier: 1, constant: 0))
         
+        
+        
     }
 }
 
@@ -836,3 +838,34 @@ extension AGShapesMenuCollectionViewCell
                                                      multiplier: 1, constant: ViewSizes.shapeImageViewSize.width))
     }
 }
+
+extension AGTextEditorView {
+    func setupConstraints () {
+        for attribute: NSLayoutAttribute in [.left, .top, .right] {
+                addConstraint(NSLayoutConstraint(item: navigationView, attribute: attribute,
+                                                  relatedBy: .equal, toItem: self, attribute: attribute,
+                                                  multiplier: 1, constant: 0))
+        }
+        
+        addConstraint(NSLayoutConstraint(item: navigationView, attribute: .height,
+                                         relatedBy: .equal, toItem: nil, attribute: .notAnAttribute,
+                                         multiplier: 1, constant: AGNavigationView.ViewSizes.viewHeight))
+        
+        addConstraint(NSLayoutConstraint(item: navigationView, attribute: .bottom,
+                                         relatedBy: .equal, toItem: textView, attribute: .top,
+                                         multiplier: 1, constant: 0))
+        
+        addConstraint(NSLayoutConstraint(item: textView, attribute: .left,
+                                         relatedBy: .equal, toItem: self, attribute: .left,
+                                         multiplier: 1, constant: ViewSizes.textViewRightLeftOffset))
+
+        addConstraint(NSLayoutConstraint(item: self, attribute: .right,
+                                         relatedBy: .equal, toItem: textView, attribute: .right,
+                                         multiplier: 1, constant: ViewSizes.textViewRightLeftOffset))
+        
+        addConstraint(NSLayoutConstraint(item: textView, attribute: .bottom,
+                                         relatedBy: .equal, toItem: self, attribute: .bottom,
+                                         multiplier: 1, constant: 0))
+    }
+}
+

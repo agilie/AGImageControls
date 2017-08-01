@@ -40,7 +40,7 @@ class AGCameraTopView: UIView {
     
     lazy var flashButton: UIButton = { [unowned self] in
         let button = UIButton()
-            button.setImage(AGAssetsService.getImage("flash_" + self.flashButtonTitles[0].lowercased() + "_icon"), for: UIControlState())
+            button.setImage(AGAppResourcesService.getImage("flash_" + self.flashButtonTitles[0].lowercased() + "_icon"), for: UIControlState())
             button.setTitleColor(UIColor.white, for: .normal)
             button.titleLabel?.font = self.configurator.flashButtonFont
             button.addTarget(self, action: #selector(flashButtonDidPress(_:)), for: .touchUpInside)
@@ -150,7 +150,7 @@ extension AGCameraTopView
         guard let title = newTitle else {
             return
         }
-        self.flashButton.setImage(AGAssetsService.getImage("flash_" + title.lowercased() + "_icon"), for: UIControlState())
+        self.flashButton.setImage(AGAppResourcesService.getImage("flash_" + title.lowercased() + "_icon"), for: UIControlState())
         self.delegate?.cameraTopView(view: self, flashButtonDidPress: title.uppercased())
     }
     

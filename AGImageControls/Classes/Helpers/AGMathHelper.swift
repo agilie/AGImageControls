@@ -28,6 +28,6 @@ class AGMathHelper
     }
     
     internal static func rad(fromDegrees value: CGFloat) -> CGFloat {
-        return value /  180 * 3.14
+        return value / 180 * CGFloat(Double.pi)
     }
 }

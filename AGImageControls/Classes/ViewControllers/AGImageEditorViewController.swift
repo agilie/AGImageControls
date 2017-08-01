@@ -25,7 +25,6 @@ class AGImageEditorViewController: AGMainViewController {
 
     var trashButtonWidthConstraint : NSLayoutConstraint? = nil
 
-    
     var selectedEditableImageView : AGEditableImageView? = nil
     
     var isGesturesEnable : Bool = false
@@ -57,6 +56,7 @@ class AGImageEditorViewController: AGMainViewController {
     
     lazy var editorService : AGImageEditorService = { [unowned self] in
         let editorService = AGImageEditorService()
+            AGAppResourcesService.registrateAppFonts()
             editorService.delegate = self
         return editorService
     } ()
@@ -69,8 +69,8 @@ class AGImageEditorViewController: AGMainViewController {
     
     lazy var editorMainMenu : AGImageEditorMainMenuCollectionView = { [unowned self] in        
         let imageEditorMainMenu = AGImageEditorMainMenuCollectionView(frame: self.view.bounds, collectionViewLayout: nil)
-        imageEditorMainMenu.imageEditorMainMenuDataSource = self
-        imageEditorMainMenu.imageEditorMainMenuDelegate = self
+            imageEditorMainMenu.imageEditorMainMenuDataSource = self
+            imageEditorMainMenu.imageEditorMainMenuDelegate = self
         return imageEditorMainMenu
     }()
     
@@ -92,8 +92,16 @@ class AGImageEditorViewController: AGMainViewController {
     
     lazy var trashButton : UIButton = { [unowned self] in
         let trashButton = UIButton()
-            trashButton.setImage(AGAssetsService.getImage(self.configurator.trashButtonIcon), for: .normal)
+            trashButton.setImage(AGAppResourcesService.getImage(self.configurator.trashButtonIcon), for: .normal)
+            trashButton.isHidden = true
         return trashButton
+    }()
+    
+    lazy var textEditor : AGTextEditorView = { [unowned self] in
+        let textEditor = AGTextEditorView.init(frame: UIScreen.main.bounds)
+            textEditor.isHidden = true
+            textEditor.delegate = self
+        return textEditor
     }()
     
     open class func createWithType (type : AGImageEditorTypes, imageName : String?) -> AGImageEditorViewController {
@@ -116,14 +124,12 @@ class AGImageEditorViewController: AGMainViewController {
     }
     
     func showWith (type : AGImageEditorTypes?, editableImage : AGEditableImageView? = nil, imageName : String? = nil) {
-        self.trashButton.showWithAnimation(isShown: true, animated: true)
         self.currentEditorType = nil
         self.navigationView.show(viewController: self)
         self.editorMainMenu.show(viewController: self)
         self.editorService.currentType = type ?? editableImage?.type ?? .icons
         
-        if (editableImage == nil)
-        {
+        if (editableImage == nil) {
             self.createNewEditableImage(imageName: imageName)
             return
         }
@@ -140,8 +146,14 @@ extension AGImageEditorViewController
 {
     fileprivate func updateImageEditorViewController( isSizeActive : Bool, isFontMenuActive : Bool, isColorMenuActive : Bool) {
         self.isGesturesEnable = isSizeActive
+        if (isFontMenuActive) {
+            self.fontEditorMenu.selectedItem = self.selectedEditableImageView?.currentFont
+        }
         self.fontEditorMenu.show(toShow: isFontMenuActive, animated: true)
-        if (isColorMenuActive) { self.editorService.resetEditorColorItems()}
+        if (isColorMenuActive) {
+            self.editorService.resetEditorColorItems()
+            self.colorEditorMenu.selectedItem = self.selectedEditableImageView?.maskColor
+        }
         self.colorEditorMenu.show(toShow: isColorMenuActive, animated: true)
     }
     
@@ -149,11 +161,11 @@ extension AGImageEditorViewController
         self.view.backgroundColor = .clear
         self.navigationView.doneButton.setTitle(self.configurator.okButtonTitle, for: .normal)
         
-        for subview : UIView in [self.imageView, self.gradientView, self.editorMainMenu, self.fontEditorMenu, colorEditorMenu, self.navigationView, self.trashButton]
-        {
+        for subview : UIView in [self.imageView, self.gradientView, self.editorMainMenu, self.fontEditorMenu, colorEditorMenu, self.navigationView, self.trashButton] {
             subview.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(subview)
         }
+        self.view.addAndPin(view: self.textEditor)
         self.setupConstraints()
     }
     
@@ -173,16 +185,15 @@ extension AGImageEditorViewController
         
         self.navigationView.hide(viewController: self)
         self.editorMainMenu.hide(viewController: self)
-        self.trashButton.showWithAnimation(isShown: false, animated: true)
         
-        self.closeAllSubviews()
+        self.resetMenu()
+        
+        self.currentEditorType = nil
         self.delegate?.imageEditorViewControllerDidClose(viewController: self)
         self.gradientView.updateHeight(viewController: self, height: 0.0)
     }
     
-    fileprivate func closeAllSubviews () {
-        self.fontEditorMenu.show(toShow: false, animated: true)
-        self.colorEditorMenu.show(toShow: false, animated: true)
+    fileprivate func resetMenu () {
         self.editorService.unselectAllImageEditorItems()
         self.editorMainMenu.unselectAllMenuItems()
     }
@@ -193,12 +204,13 @@ extension AGImageEditorViewController
         case .icons, .shapes:
             guard let name = imageName else { return }
             self.selectedEditableImageView = AGEditableImageView.createWithImage(imageName: name, type: self.editorService.currentType, tag: self.editorService.newImageViewTag)
-            self.selectedEditableImageView?.delegate = self
-            self.imageView.addSubview(self.selectedEditableImageView!)
-            return
+            break
         default:
-            return
+            self.selectedEditableImageView = AGEditableImageView.createWithText(type: self.editorService.currentType, tag: self.editorService.newImageViewTag)
+            break
         }
+        self.selectedEditableImageView?.delegate = self
+        self.imageView.addSubview(self.selectedEditableImageView!)
     }
     
     //MARK: Gesture recognizers methods
@@ -246,7 +258,7 @@ extension AGImageEditorViewController
         case .began:
             zoomPinchGestureRecognizer.scale = self.selectedEditableImageView?.newPosition?.scale ?? 1
         case .changed:
-            self.selectedEditableImageView?.newPosition?.scale = zoomPinchGestureRecognizer.scale
+            self.selectedEditableImageView?.newPosition?.scale = self.selectedEditableImageView?.modifiedScaling(scale: zoomPinchGestureRecognizer.scale) ?? 1.0
         case .ended:
             self.selectedEditableImageView?.updateImage()
             zoomPinchGestureRecognizer.scale = 1
@@ -257,10 +269,14 @@ extension AGImageEditorViewController
     
     func changeTrashButtonSize (isActive : Bool) {
         self.view.layoutIfNeeded()
+        self.trashButton.isHidden = false
         UIView.animate(withDuration: 0.245, animations: {
+            self.trashButton.alpha = isActive ? 1.0 : 0.0
             self.trashButtonWidthConstraint!.constant = isActive ? ViewSizes.trashButtonDefaultWidth * 2 : ViewSizes.trashButtonDefaultWidth
             self.view.layoutIfNeeded()
-        })
+        }) { (isFinished) in
+            self.trashButton.isHidden = !isActive
+        }
     }
 }
 
@@ -268,6 +284,8 @@ extension AGImageEditorViewController : AGImageEditorServiceDelegate
 {
     func undoLastChanges (imageChangesItem : AGImageChangesItem) {
         if let imageView = self.imageView.subviews.viewWithTag(tag: imageChangesItem.tag) as? AGEditableImageView {
+            imageView.lastFont = imageChangesItem.font
+            imageView.lastText = imageChangesItem.text
             imageView.lastPosition = imageChangesItem.position
             imageView.lastMaskColor = imageChangesItem.mask
             imageView.undoImageChanges()
@@ -303,11 +321,11 @@ extension AGImageEditorViewController : AGImageEditorMainMenuCollectionViewDeleg
 extension AGImageEditorViewController : AGFontEditorViewDelegate
 {
     func updateFont (view : AGFontEditorView, newFont : AGFontEditorItem) {
-//        print(newFont.fullName)
+        self.selectedEditableImageView?.currentFont = newFont.copyItem()
     }
     
     func fontEditorDidClose (view : AGFontEditorView) {
-        self.closeAllSubviews()
+        self.currentEditorType = nil
     }
 }
 
@@ -333,11 +351,11 @@ extension AGImageEditorViewController : AGColorEditorViewDataSource
 extension AGImageEditorViewController : AGColorEditorViewDelegate
 {
     func updateColor (view : AGColorEditorView, colorEditorItem : AGColorEditorItem) {
-        self.selectedEditableImageView?.changeColor(colorItem: colorEditorItem)
+        self.selectedEditableImageView?.maskColor = colorEditorItem.copyItem()
     }
     
     func colorEditorDidClose (view : AGColorEditorView) {
-        self.closeAllSubviews()
+        self.currentEditorType = nil
     }
 }
 
@@ -361,6 +379,13 @@ extension AGImageEditorViewController : AGEditableImageViewDelegate
         }
         self.changeTrashButtonSize(isActive: false)
     }
+    
+    func showTextEditor (imageView : AGEditableImageView) {
+        guard let imageView = self.selectedEditableImageView, let font = self.selectedEditableImageView?.currentFont else { return }
+        self.navigationView.hide(viewController: self)
+        self.editorMainMenu.hide(viewController: self)
+        self.textEditor.showWithText(text: imageView.text, placeholder : imageView.placeholder, font : font)
+    }
 }
 
 extension Array where Element: UIView {
@@ -369,3 +394,11 @@ extension Array where Element: UIView {
     }
 }
 
+extension AGImageEditorViewController : AGTextEditorViewDelegate
+{
+    func doneButtonDidTouch (textEditorView : AGTextEditorView, text : String) {
+        self.selectedEditableImageView?.text = text
+        self.navigationView.show(viewController: self)
+        self.editorMainMenu.show(viewController: self)
+    }
+}

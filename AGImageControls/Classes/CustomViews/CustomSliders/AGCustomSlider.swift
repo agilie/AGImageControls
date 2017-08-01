@@ -29,9 +29,9 @@ class AGCustomSlider: UISlider {
         slider.value = 0
         slider.isHidden = true
         
-        slider.setThumbImage(AGAssetsService.getImage(slider.configurator.sliderThumbIcon), for: .normal)
-        slider.setThumbImage(AGAssetsService.getImage(slider.configurator.sliderThumbIcon), for: .highlighted)
-        slider.setThumbImage(AGAssetsService.getImage(slider.configurator.sliderThumbIcon), for: .selected)
+        slider.setThumbImage(AGAppResourcesService.getImage(slider.configurator.sliderThumbIcon), for: .normal)
+        slider.setThumbImage(AGAppResourcesService.getImage(slider.configurator.sliderThumbIcon), for: .highlighted)
+        slider.setThumbImage(AGAppResourcesService.getImage(slider.configurator.sliderThumbIcon), for: .selected)
         
         return slider
     }

@@ -60,7 +60,7 @@ class AGImageAdjustmentCollectionViewCell: UICollectionViewCell, AGCellInterface
     }
     
     func configureForMenuItem (menuItem: AGAdjustmentMenuItem) {
-        self.imageView.image = AGAssetsService.getImage(menuItem.iconName)
+        self.imageView.image = AGAppResourcesService.getImage(menuItem.iconName)
         self.titleLabel.text = menuItem.name.capitalized
         self.addBorderToImageView(menuItem: menuItem)
     }

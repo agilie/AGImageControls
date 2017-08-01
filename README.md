@@ -61,7 +61,7 @@ pod "AGImageControls"
 
 ## Demo
 
-<img src="https://user-images.githubusercontent.com/4165054/28632257-9be44f24-7238-11e7-95da-1e65d40dad25.gif" alt="AGImageControls Demo" height="430" width="250" border ="50"> <img src="https://user-images.githubusercontent.com/4165054/28632626-eceb39b8-7239-11e7-8fd0-2c49aac29ac1.gif" alt="AGImageControls Demo" height="430" width="250" border ="50">
+<img src="https://user-images.githubusercontent.com/4165054/28632257-9be44f24-7238-11e7-95da-1e65d40dad25.gif" alt="AGImageControls Demo" height="430" width="250" border ="50"> <img src="https://user-images.githubusercontent.com/4165054/28632626-eceb39b8-7239-11e7-8fd0-2c49aac29ac1.gif" alt="AGImageControls Demo" height="430" width="250" border ="50"> <img src="https://user-images.githubusercontent.com/4165054/28826648-80f445f8-76d3-11e7-9319-186542a8ac1e.gif" alt="AGImageControls Demo" height="430" width="250" border ="50">
 
 ## Example
 

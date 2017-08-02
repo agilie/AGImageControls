@@ -39,7 +39,7 @@ open class AGMainViewController: UIViewController {
 
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
     
     lazy var screenSize : CGSize =

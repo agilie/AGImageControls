@@ -53,7 +53,7 @@ class AGImageMasksView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
     
     lazy var addNewImageButton: UIButton = { [unowned self] in

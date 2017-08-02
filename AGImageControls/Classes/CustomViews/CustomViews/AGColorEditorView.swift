@@ -37,7 +37,7 @@ class AGColorEditorView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
     
     lazy var collectionView : AGColorEditorCollectionView = { [unowned self] in

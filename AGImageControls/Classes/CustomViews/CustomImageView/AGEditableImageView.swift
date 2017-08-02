@@ -34,7 +34,7 @@ class AGEditableImageView: UIImageView {
     weak var delegate : AGEditableImageViewDelegate?
 
     lazy var configurator : AGAppConfigurator = {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
     
     struct ViewSizes {
@@ -135,6 +135,8 @@ class AGEditableImageView: UIImageView {
     }
     
     
+    var lastCenterPosition = CGPoint.zero
+    
     var isActive : Bool = true
     
     var imageName : String = ""
@@ -219,15 +221,15 @@ class AGEditableImageView: UIImageView {
     
     func moveEditableImageView (_ gestureRecognizer : UIPanGestureRecognizer) {
         if (!self.isActive) { return }
-        
         let touchLocation = gestureRecognizer.location(in: self.superview)
-        
         switch gestureRecognizer.state {
         case .began:
             self.delegate?.startMoving(imageView: self)
+            let point = self.newPosition?.centerPoint ?? CGPoint.zero
+            self.lastCenterPosition = CGPoint(x: point.x - touchLocation.x, y: point.y - touchLocation.y)
         case .changed:
-            self.center = touchLocation
-            self.newPosition?.centerPoint = touchLocation
+            self.center = CGPoint(x: self.lastCenterPosition.x + touchLocation.x, y: self.lastCenterPosition.y + touchLocation.y)
+            self.newPosition?.centerPoint = self.center
         case .ended:
             self.delegate?.endMoving(imageView: self, touchLocation: touchLocation)
         default:

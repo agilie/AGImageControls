@@ -40,6 +40,12 @@ public class AGCameraSnapViewController: AGMainViewController {
     
     open var startOnFrontCamera = false
     
+    open class func create (isMetalAvailable : Bool = false) -> AGCameraSnapViewController {
+        let viewController = AGCameraSnapViewController()
+            viewController.configurator.isMetalAvailable = isMetalAvailable
+        return viewController
+    }
+    
    open override func viewDidLoad() {
         super.viewDidLoad()
         [cameraController.view, bottomContainer, topView].forEach {

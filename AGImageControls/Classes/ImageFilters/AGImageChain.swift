@@ -61,6 +61,7 @@ open class AGImageChain {
         return self
     }
     
+    @discardableResult
     public func brightness(_ brightness: Float = 0.0) -> Self {
         let filter = AGBrightnessFilter(device: self.device)
         filter.brightness = brightness
@@ -68,6 +69,7 @@ open class AGImageChain {
         return self
     }
     
+    @discardableResult
     public func contrast(_ threshold: Float = 0.0) -> Self {
         let filter = AGContrastFilter(device: self.device)
         filter.threshold = threshold
@@ -75,6 +77,7 @@ open class AGImageChain {
         return self
     }
     
+    @discardableResult
     public func saturation(color: Float) -> Self {
         let filter = AGSaturationFilter(device: self.device)
         filter.saturation = color
@@ -82,6 +85,7 @@ open class AGImageChain {
         return self
     }
     
+    @discardableResult
     public func blur(_ blurRadius: Float = 0.0) -> Self {
         let filter = AGBlurFilter(device: self.device)
         filter.radius = blurRadius
@@ -90,6 +94,7 @@ open class AGImageChain {
         return self
     }
     
+    @discardableResult
     public func sharpen(_ radius: Float = 0.0) -> Self {
         let filter = AGSharpenFilter(device: self.device)
         filter.radius = radius
@@ -98,6 +103,7 @@ open class AGImageChain {
         return self
     }
     
+    @discardableResult
     public func details(_ radius: Float = 0.0) -> Self {
         let filter = AGDetailsFilter(device: self.device)
         filter.radius = radius
@@ -106,6 +112,7 @@ open class AGImageChain {
         return self
     }
     
+    @discardableResult
     public func softLightFilter (_ value: Int = 0) -> Self {
         
         let filter = AGSoftLightFilter(device: self.device)

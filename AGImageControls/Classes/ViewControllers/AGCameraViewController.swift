@@ -24,7 +24,7 @@ class AGCameraViewController: UIViewController {
 
     lazy var configurator : AGAppConfigurator =
         {
-        return  AGAppConfigurator()
+        return  AGAppConfigurator.sharedInstance
     }()
     
     lazy var blurView: UIVisualEffectView = { [unowned self] in

@@ -12,7 +12,7 @@ class AGCustomSlider: UISlider {
 
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
 
 

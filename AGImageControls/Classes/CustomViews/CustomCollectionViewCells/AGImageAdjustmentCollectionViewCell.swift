@@ -12,7 +12,7 @@ class AGImageAdjustmentCollectionViewCell: UICollectionViewCell, AGCellInterface
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
 
     struct ViewSizes {

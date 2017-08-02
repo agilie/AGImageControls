@@ -36,7 +36,7 @@ class AGImageAdjustmentView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
     
     lazy var collectionView : AGImageAdjustmentCollectionView = { [unowned self] in

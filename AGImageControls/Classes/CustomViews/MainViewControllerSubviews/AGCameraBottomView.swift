@@ -31,7 +31,7 @@ open class AGCameraBottomView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
     
     lazy var snapButton: UIButton = { [unowned self] in

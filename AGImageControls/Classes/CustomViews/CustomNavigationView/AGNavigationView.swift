@@ -32,7 +32,7 @@ class AGNavigationView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
 
     lazy var backButton: UIButton = { [unowned self] in

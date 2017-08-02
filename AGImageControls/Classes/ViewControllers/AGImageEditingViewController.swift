@@ -283,7 +283,7 @@ extension AGImageEditingViewController : AGImageAdjustmentViewDelegate
         self.navigationView.show(viewController: self)
         self.gradientView.updateHeight(viewController: self, height: AGSettingsMenuCollectionView.ViewSizes.height + 100)
 
-        self.scrollImageView.updateImage(image: self.editingService.applyMetalFilter())
+        self.scrollImageView.updateImage(image: self.editingService.applyFilters())
     }
     
     func cancelAllFiltersButtonDidTouch(view : AGImageAdjustmentView) {
@@ -339,7 +339,7 @@ extension AGImageEditingViewController : AGGradientFilterViewDelegate
         self.navigationView.show(viewController: self)
         self.scrollImageView.removeGradientFilterImage()
         self.editingService.removeGradientFilterImage()
-        self.scrollImageView.updateImage(image: self.editingService.applyMetalFilter())
+//        self.scrollImageView.updateImage(image: self.editingService.applyFilters())
     }
 }
 

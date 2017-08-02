@@ -25,7 +25,7 @@ class AGCameraTopView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
 
     lazy var flashButtonTitles : [String] =

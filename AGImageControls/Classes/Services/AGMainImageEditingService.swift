@@ -25,6 +25,10 @@ class AGMainImageEditingService : NSObject
     
     var saturationMetal : AGImageChain? = nil
     
+    
+    var ciContext : CIContext? = nil
+    var coreImage : CIImage? = nil
+    
     open class func  create() -> AGMainImageEditingService
     {
         let service = AGMainImageEditingService()
@@ -34,6 +38,9 @@ class AGMainImageEditingService : NSObject
     func setImage (image : UIImage) {
         self.modifiedImage = image
         self.defaultImage = image
+        if !AGImageChain.isMetalAvailable() || !AGAppConfigurator.sharedInstance.isMetalAvailable {
+            self.configureCIContext()
+        }
     }
     
     lazy var settingsMenuItems : [AGSettingMenuItemModel] = {
@@ -80,35 +87,19 @@ class AGMainImageEditingService : NSObject
         }()
 
     
-    func applyFilterFor (adjustmentItem : AGAdjustmentMenuItem) -> UIImage?
-    {
+    func applyFilterFor (adjustmentItem : AGAdjustmentMenuItem) -> UIImage? {
         guard let image = self.modifiedImage else {
             return nil
         }
         if (tempAdjustmentImage == nil) { self.tempAdjustmentImage = image }
         
         switch adjustmentItem.type {
-        case .saturationType:
-            self.addSaturationFilter(adjustmentItem: adjustmentItem, image: image)
-        case .brightnessType:
-            self.addBrightnessFilter(adjustmentItem: adjustmentItem, image: image)
-        case .contrastType:
-            self.addContrastFilter(adjustmentItem: adjustmentItem, image: image)
-        case .adjustType:
-            return self.modifiedImage
-        case .structureType:
-            self.addDetailsFilter(adjustmentItem: adjustmentItem, image: image)
-        case .tiltShiftType:
-            self.addBlurFilter(adjustmentItem: adjustmentItem, image: image)
-        case .sharpenType:
-            self.addSharpenFilter(adjustmentItem: adjustmentItem, image: image)
-        case .warmthType:
-            self.addSoftLightFilter(adjustmentItem: adjustmentItem, image: image)
-        default:
+        case .adjustmentDefault:
             self.removeAllFilters()
             return self.defaultImage
+        default:
+            self.applyFilters()
         }
-        
         return self.tempAdjustmentImage
     }
     
@@ -116,226 +107,71 @@ class AGMainImageEditingService : NSObject
         adjustmentItem.lastValue = adjustmentItem.currentValue
     }
     
-    func removeAllFilters ()
-    {
+    func removeAllFilters () {
         self.modifiedImage = self.defaultImage
         self.tempAdjustmentImage = nil
-        for adjustmentItem in self.adjustmentItems
-        {
+        for adjustmentItem in self.adjustmentItems {
             adjustmentItem.reset()
         }
     }
     
-    
-    func addBrightnessFilter (adjustmentItem : AGAdjustmentMenuItem, image : UIImage)
-    {
-        let value = (adjustmentItem.currentValue / 100.0) / 4
-        if AGImageChain.isMetalAvailable()
-        {
-            self.applyMetalFilter()
-            return
-        }
-        self.tempAdjustmentImage = self.colorControlFilter(image: image,
-                                                           coreImageFilter: "CIColorControls",
-                                                           filterKey: kCIInputBrightnessKey,
-                                                           value: value)
-    }
-    
-    func addContrastFilter (adjustmentItem : AGAdjustmentMenuItem, image : UIImage)
-    {
-        let value = (adjustmentItem.currentValue / 100.0) / 4 + 1
-        if AGImageChain.isMetalAvailable()
-        {
-            self.applyMetalFilter()
-            return
-        }
-        self.tempAdjustmentImage = self.colorControlFilter(image: image,
-                                                           coreImageFilter: "CIColorControls",
-                                                           filterKey: kCIInputContrastKey,
-                                                           value: value)
-    }
-
-    func addSaturationFilter (adjustmentItem : AGAdjustmentMenuItem, image : UIImage)
-    {
-        let value = (adjustmentItem.currentValue / 100.0) + 1
-            
-        if AGImageChain.isMetalAvailable()
-        {
-            self.applyMetalFilter()
-            return
-        }
-        self.tempAdjustmentImage = self.colorControlFilter(image: image,
-                                                           coreImageFilter: "CIColorControls",
-                                                           filterKey: kCIInputSaturationKey,
-                                                           value: value)
-    }
-    
-    func addDetailsFilter (adjustmentItem : AGAdjustmentMenuItem, image : UIImage)
-    {
-        if AGImageChain.isMetalAvailable()
-        {
-            self.applyMetalFilter()
-            return
-        }
-        self.tempAdjustmentImage = self.addFilterTo(image: image,
-                                                    coreImageFilter: "CIBoxBlur",
-                                                    filterKey: kCIInputRadiusKey,
-                                                    value: adjustmentItem.currentValue)
-    }
-    
-    func addBlurFilter (adjustmentItem : AGAdjustmentMenuItem, image : UIImage)
-    {
-        if AGImageChain.isMetalAvailable()
-        {
-            self.applyMetalFilter()
-            return
-        }
-        self.tempAdjustmentImage = self.addFilterTo(image: image,
-                                                    coreImageFilter: "CIBoxBlur",
-                                                    filterKey: kCIInputRadiusKey,
-                                                    value: adjustmentItem.currentValue)
-    }
-
-    func addSharpenFilter (adjustmentItem : AGAdjustmentMenuItem, image : UIImage)
-    {
-        if AGImageChain.isMetalAvailable()
-        {
-            self.applyMetalFilter()
-            return
-        }
-        self.tempAdjustmentImage = self.addFilterTo(image: image,
-                                                    coreImageFilter: "CIUnsharpMask",
-                                                    filterKey: kCIInputRadiusKey,
-                                                    value: adjustmentItem.currentValue)
-    }
-
-    func addSoftLightFilter (adjustmentItem : AGAdjustmentMenuItem, image : UIImage)
-    {
-        if AGImageChain.isMetalAvailable()
-        {
-            self.applyMetalFilter()
-            return
-        }
-        self.tempAdjustmentImage = self.addFilterTo(image: image,
-                                                    coreImageFilter: "CIUnsharpMask",
-                                                    filterKey: kCIInputRadiusKey,
-                                                    value: adjustmentItem.currentValue)
-    }
-    
     @discardableResult
-    func applyMetalFilter () -> UIImage?
-    {
+    func applyFilters () -> UIImage?  {
         guard let image = self.modifiedImage else {
             return nil
         }
-        return self.applyMetalFilterFor(image: image)
+        if AGImageChain.isMetalAvailable() && AGAppConfigurator.sharedInstance.isMetalAvailable {
+            return self.applyMetalFilter(image: image)
+        }
+       return self.applyCoreImageFilter()
     }
     
-    fileprivate func applyMetalFilterFor (image : UIImage) -> UIImage
-    {
+    
+    fileprivate func applyMetalFilter (image : UIImage) -> UIImage {
         let processMetal = AGImageChain.init(image: image)
         
-        if self.adjustmentItems[1].currentValue != self.adjustmentItems[1].defaultValue
-        {
-            _ = processMetal.saturation(color: self.adjustmentItems[1].currentValue / 100 + 1.0)
+        self.adjustmentItems.forEach {
+            if $0.currentValue != $0.defaultValue {
+                switch $0.type {
+                case .saturationType:
+                    processMetal.saturation(color: $0.currentValue / 100 + 1.0)
+                case .brightnessType:
+                    processMetal.brightness(($0.currentValue / 100) / 4)
+                case .contrastType:
+                    processMetal.contrast(($0.currentValue / 100.0) / 4 + 1.0)
+                case .structureType:
+                    processMetal.details($0.currentValue / 60)
+                case .tiltShiftType:
+                    processMetal.blur($0.currentValue / 2)
+                case .sharpenType:
+                    processMetal.sharpen($0.currentValue / 60)
+                case .warmthType:
+                    processMetal.softLightFilter(Int($0.currentValue / 3))
+                default:
+                    break
+                }
+            }
         }
-        
-        if self.adjustmentItems[2].currentValue != self.adjustmentItems[2].defaultValue
-        {
-            _ = processMetal.brightness((self.adjustmentItems[2].currentValue / 100) / 4)
-        }
-        
-        if self.adjustmentItems[3].currentValue != self.adjustmentItems[3].defaultValue
-        {
-            _ = processMetal.contrast((self.adjustmentItems[3].currentValue / 100.0) / 4 + 1.0)
-        }
-        
-        if self.adjustmentItems[4].currentValue != self.adjustmentItems[4].defaultValue
-        {
-            _ = processMetal.details(self.adjustmentItems[4].currentValue / 60)
-        }
-        
-        if self.adjustmentItems[5].currentValue != self.adjustmentItems[5].defaultValue
-        {
-            _ = processMetal.blur(self.adjustmentItems[5].currentValue / 2)
-        }
-        
-        if self.adjustmentItems[6].currentValue != self.adjustmentItems[6].defaultValue
-        {
-            _ = processMetal.sharpen(self.adjustmentItems[6].currentValue / 60)
-        }
-    
-        if self.adjustmentItems[7].currentValue != self.adjustmentItems[7].defaultValue
-        {
-            _ = processMetal.softLightFilter(Int(self.adjustmentItems[7].currentValue / 3))
-        }
-        
-        guard let adjustmentImage = processMetal.image() else
-        {
-            return image
-        }
+        guard let adjustmentImage = processMetal.image() else { return image }
         self.tempAdjustmentImage = adjustmentImage
         return self.tempAdjustmentImage!
     }
     
-    
-            
-    func colorControlFilter (image: UIImage, coreImageFilter : String,  filterKey: String, value : Float) -> UIImage {
-        
-        if (self.colorControlFilter == nil)
-        {
-            guard let filter = CIFilter(name: coreImageFilter) else { return image}
-            self.colorControlFilter = filter
-            let sourceImage = CIImage(image: image)
-            self.colorControlFilter!.setValue(sourceImage, forKey: kCIInputImageKey)
-        }
-        let openGLContext = EAGLContext(api: .openGLES2)
-        let context = CIContext.init(eaglContext: openGLContext!, options: [kCIContextPriorityRequestLow: true])
-        self.colorControlFilter!.setValue(value, forKey: filterKey)
-        
-        if let output = self.colorControlFilter!.outputImage {
-            let cgimgresult = context.createCGImage(output, from: output.extent)
-            let result = UIImage.init(cgImage: cgimgresult!)
-            return result
-        }
-        return image
-    }
-    
-    func addFilterTo (image: UIImage, coreImageFilter : String,  filterKey: String, value : Float) -> UIImage {
-        
-        guard let filter = CIFilter(name: coreImageFilter) else { return image}
-        let sourceImage = CIImage(image: image)
-        filter.setValue(sourceImage, forKey: kCIInputImageKey)
-        let openGLContext = EAGLContext(api: .openGLES2)
-        let context = CIContext.init(eaglContext: openGLContext!, options: [kCIContextPriorityRequestLow: true])
-        filter.setValue(value, forKey: filterKey)
-        
-        if let output = filter.outputImage {
-            let cgimgresult = context.createCGImage(output, from: output.extent)
-            let result = UIImage.init(cgImage: cgimgresult!)
-            return result
-        }
-        return image
-    }
-    
-    func applyGradientFilterFor (modifiedImage : UIImage, gradientImage : UIImage) -> UIImage?
-    {
+
+    func applyGradientFilterFor (modifiedImage : UIImage, gradientImage : UIImage) -> UIImage? {
         return UIImage.combineImages(images: [modifiedImage, gradientImage])
     }
     
-    func addGradientFilterImage (gradientFilterItem : AGGradientFilterItemModel)
-    {
+    func addGradientFilterImage (gradientFilterItem : AGGradientFilterItemModel) {
         guard let modImage = self.modifiedImage else { return }
-        if (self.selectedGradientFilterItem != gradientFilterItem)
-        {
+        if (self.selectedGradientFilterItem != gradientFilterItem) {
             self.selectedGradientFilterItem?.lastValue = self.selectedGradientFilterItem?.defaultValue ?? 0
         }
         
         gradientFilterItem.lastValue = gradientFilterItem.currentValue
         self.selectedGradientFilterItem = gradientFilterItem
         
-        if (self.gradientImage == nil)
-        {
+        if (self.gradientImage == nil) {
             self.gradientImage = UIImage.resizeImage(image: AGAppResourcesService.getImage(gradientFilterItem.imageName),
                                                     targetSize: modImage.size,
                                                     alpha: CGFloat(gradientFilterItem.currentValue / 100.0))
@@ -358,9 +194,8 @@ class AGMainImageEditingService : NSObject
         self.selectedGradientFilterItem = nil
     }
     
-    func posterImage (editorImage : UIImage?) -> UIImage
-    {
-        guard let mainImage = self.applyMetalFilter() else {
+    func posterImage (editorImage : UIImage?) -> UIImage {
+        guard let mainImage = self.applyFilters() else {
             return UIImage()
         }
         guard let gradientImage = self.gradientImage else {
@@ -376,6 +211,109 @@ class AGMainImageEditingService : NSObject
             return UIImage.combineImages(images: [mainImage, finalGradientImage])
         }
         let finalMaskImage = UIImage.resizeImage(image: masksImage, targetSize: mainImage.size, alpha: 1.0)
-        return UIImage.combineImages(images: [mainImage, finalGradientImage, finalMaskImage])
+        
+        let posterImage = UIImage.combineImages(images: [mainImage, finalGradientImage, finalMaskImage])
+        self.cleanService()
+        return posterImage
     }
+    
+    @discardableResult
+    func applyCoreImageFilter() -> UIImage? {
+        
+        guard let ciImage = self.imageWithCIFilters()  else { return nil }
+        
+        guard let cgImageResult = self.ciContext?.createCGImage(ciImage, from: ciImage.extent) else { return nil }
+        
+        let result = UIImage.init(cgImage: cgImageResult)
+        
+        self.tempAdjustmentImage = result
+        
+        return result
+    }
+    
+    
+    fileprivate func imageWithCIFilters () -> CIImage? {
+        guard let ciImage = self.coreImage else { return nil }
+        
+        var newCIImage : CIImage? = ciImage
+        
+        self.adjustmentItems.forEach {
+            if $0.currentValue != $0.defaultValue {
+                switch $0.type {
+                case .saturationType:
+                    newCIImage = self.addCIFilter(image: newCIImage,
+                                                  coreImageFilter: "CIColorControls",
+                                                  filterKeys: [kCIInputSaturationKey : $0.currentValue / 100 + 1.0])
+                case .brightnessType:
+                    newCIImage = self.addCIFilter(image: newCIImage,
+                                                  coreImageFilter: "CIColorControls",
+                                                  filterKeys: [kCIInputBrightnessKey : ($0.currentValue / 100) / 4 ])
+                case .contrastType:
+                    newCIImage = self.addCIFilter(image: newCIImage,
+                                                  coreImageFilter: "CIColorControls",
+                                                  filterKeys: [kCIInputContrastKey : ($0.currentValue / 100.0) / 4 + 1.0])
+                    
+                case .structureType:
+                    newCIImage = self.addCIFilter(image: newCIImage,
+                                                  coreImageFilter: "CISharpenLuminance",
+                                                  filterKeys: [kCIInputSharpnessKey : $0.currentValue / 50 + 0.4])
+                case .tiltShiftType:
+                    newCIImage = self.addCIFilter(image: newCIImage,
+                                                  coreImageFilter: "CIBoxBlur",
+                                                  filterKeys: [kCIInputRadiusKey : $0.currentValue / 4])
+                case .sharpenType:
+                    newCIImage = self.addCIFilter(image: newCIImage,
+                                                  coreImageFilter: "CIUnsharpMask",
+                                                  filterKeys: [kCIInputRadiusKey : $0.currentValue])
+                case .warmthType:
+                    let correctionValue = $0.currentValue / 200
+                    let r: CGFloat = $0.currentValue > 0 ? CGFloat(1.0 + correctionValue) : CGFloat(1.0 + correctionValue)
+                    let g: CGFloat = 1.0
+                    let b: CGFloat = $0.currentValue < 0 ? CGFloat(1.0 - correctionValue) : CGFloat(1.0 - correctionValue)
+                    let a: CGFloat = 1.0
+                    newCIImage = self.addCIFilter(image: newCIImage,
+                                                  coreImageFilter: "CIColorMatrix",
+                                                  filterKeys: ["inputRVector" : CIVector(x:r, y:0, z:0, w:0),
+                                                               "inputGVector" : CIVector(x:0, y:g, z:0, w:0),
+                                                               "inputBVector" : CIVector(x:0, y:0, z:b, w:0),
+                                                               "inputAVector" : CIVector(x:0, y:0, z:0, w:a),] )
+                default:
+                    break
+                }
+                
+            }
+        }
+        return newCIImage
+    }
+
+    fileprivate func addCIFilter (image: CIImage?, coreImageFilter : String,  filterKeys: [String : Any] /*, value : Float*/) -> CIImage? {
+        guard let image = image else { return nil }
+        guard let filter = CIFilter(name: coreImageFilter) else { return image}
+            filter.setValue(image, forKey: kCIInputImageKey)
+            filterKeys.forEach {
+                filter.setValue($0.value, forKey: $0.key)
+            }
+        return filter.value(forKey: kCIOutputImageKey) as? CIImage
+    }
+    
+    fileprivate func configureCIContext () {
+        if self.ciContext != nil {
+            return
+        }
+        guard let image = self.modifiedImage else { return }
+        guard let cgimg = image.cgImage else { return }
+        
+        self.coreImage = CIImage(cgImage: cgimg)
+        let openGLContext = EAGLContext(api: .openGLES2)
+        self.ciContext = CIContext.init(eaglContext: openGLContext!, options: [kCIContextPriorityRequestLow: true])
+    }
+    
+    fileprivate func cleanService () {
+        self.removeAllFilters()
+        self.ciContext = nil
+        self.coreImage = nil
+        self.defaultImage = nil
+        self.modifiedImage = nil
+    }
+    
 }

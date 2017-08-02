@@ -18,7 +18,7 @@ class AGLastPhotoFromGalleryView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
 
     open lazy var imageView : UIImageView =

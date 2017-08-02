@@ -37,7 +37,7 @@ class AGGradientFilterView: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
     
     lazy var collectionView : AGGradientFilterCollectionView = { [unowned self] in

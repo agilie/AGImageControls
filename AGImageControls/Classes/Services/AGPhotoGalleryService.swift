@@ -29,7 +29,7 @@ open class AGPhotoGalleryService: UIView {
     
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
 
     open func fetchWithCompletion (completion: @escaping (_ assets : [PHAsset],

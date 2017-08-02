@@ -25,14 +25,13 @@ class AGTextEditorView: UIView {
         
     lazy var configurator : AGAppConfigurator =
         {
-            return  AGAppConfigurator()
+            return  AGAppConfigurator.sharedInstance
     }()
 
     lazy var navigationView : AGNavigationView = { [unowned self] in
         let navigationView = AGNavigationView()
-            navigationView.doneButton.isHidden = false
+            navigationView.doneButton.isHidden = true
             navigationView.delegate = self
-        
         return navigationView
     }()
     

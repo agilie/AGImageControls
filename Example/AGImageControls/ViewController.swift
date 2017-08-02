@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func captureNewImageButtonDidTouch(_ sender: Any) {
-        let camera = AGCameraSnapViewController()
+        let camera = AGCameraSnapViewController.create()
             camera.delegate = self
         self.present(camera, animated: true, completion: nil)
     }

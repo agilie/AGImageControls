@@ -8,11 +8,14 @@
 
 import UIKit
 
+private let shared = AGAppConfigurator()
 
-public struct AGAppConfigurator {
+public class AGAppConfigurator {
     
+    class var sharedInstance: AGAppConfigurator {
+        return shared
+    }
     //MARK: Icons
-    
     public var cameraFocusIcon = "focusIcon"
     public var backButtonIcon = "backButton_icon"
     public var sliderThumbIcon = "sliderThumb_icon"
@@ -31,7 +34,6 @@ public struct AGAppConfigurator {
     public var imageEditorButtonsColor = UIColor.init(white: 0, alpha: 0.5)
     
     // MARK: Fonts
-    
     public var flashButton =  UIFont.ubuntuMediumFontWithSize(size: 14)
     
     public var noCameraFont = UIFont.ubuntuMediumFontWithSize(size: 18)
@@ -55,7 +57,6 @@ public struct AGAppConfigurator {
     public var fontButtonTitleLabelFont = UIFont.ubuntuMediumFontWithSize(size: 18)
     
     // MARK: Titles
-    
     public var okButtonTitle = "ok"
     public var cancelButtonTitle = "Cancel"
     public var doneButtonTitle = "done"
@@ -81,8 +82,8 @@ public struct AGAppConfigurator {
     
     
     // MARK: Custom behaviour
-
     public var canRotateCamera = true
+    public var isMetalAvailable = false
     
-    public init() {}
+//    public init() {}
 }

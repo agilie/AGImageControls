@@ -15,9 +15,6 @@ class AGMainImageEditingService : NSObject
     var defaultImage                             : UIImage? = nil
     var tempAdjustmentImage                      : UIImage? = nil
     var modifiedImage                            : UIImage? = nil
-    var gradientImage                            : UIImage? = nil
-    
-    var tempGradientImage         : UIImage? = nil
     
     var selectedGradientFilterItem : AGGradientFilterItemModel? = nil
     
@@ -157,39 +154,16 @@ class AGMainImageEditingService : NSObject
         return self.tempAdjustmentImage!
     }
     
-
-    func applyGradientFilterFor (modifiedImage : UIImage, gradientImage : UIImage) -> UIImage? {
-        return UIImage.combineImages(images: [modifiedImage, gradientImage])
-    }
-    
     func addGradientFilterImage (gradientFilterItem : AGGradientFilterItemModel) {
-        guard let modImage = self.modifiedImage else { return }
         if (self.selectedGradientFilterItem != gradientFilterItem) {
             self.selectedGradientFilterItem?.lastValue = self.selectedGradientFilterItem?.defaultValue ?? 0
         }
         
         gradientFilterItem.lastValue = gradientFilterItem.currentValue
         self.selectedGradientFilterItem = gradientFilterItem
-        
-        if (self.gradientImage == nil) {
-            self.gradientImage = UIImage.resizeImage(image: AGAppResourcesService.getImage(gradientFilterItem.imageName),
-                                                    targetSize: modImage.size,
-                                                    alpha: CGFloat(gradientFilterItem.currentValue / 100.0))
-        }
-        guard let tempAdjustment = self.tempAdjustmentImage, let gradImage = self.gradientImage else {
-            guard let modImage = self.modifiedImage, let gradImage = self.gradientImage else {
-                return
-            }
-            self.tempGradientImage = self.applyGradientFilterFor(modifiedImage: modImage, gradientImage: gradImage)
-            return
-        }
-        self.tempGradientImage = self.applyGradientFilterFor(modifiedImage: tempAdjustment, gradientImage: gradImage)
     }
     
-    
     func removeGradientFilterImage () {
-        self.tempGradientImage = nil
-        self.gradientImage = nil
         self.selectedGradientFilterItem?.lastValue = self.selectedGradientFilterItem?.defaultValue ?? 0
         self.selectedGradientFilterItem = nil
     }
@@ -198,15 +172,17 @@ class AGMainImageEditingService : NSObject
         guard let mainImage = self.applyFilters() else {
             return UIImage()
         }
-        guard let gradientImage = self.gradientImage else {
+        guard let gradientImage = self.selectedGradientFilterItem else {
             guard let masksImage = editorImage else {
                 return mainImage
             }
             let finalMaskImage = UIImage.resizeImage(image: masksImage, targetSize: mainImage.size, alpha: 1.0)
             return UIImage.combineImages(images: [mainImage, finalMaskImage ])
         }
-        let finalGradientImage = UIImage.resizeImage(image: gradientImage, targetSize: mainImage.size, alpha: CGFloat(self.selectedGradientFilterItem?.lastValue ?? 0) / 100.0)
-
+        let finalGradientImage = UIImage.resizeImage(image: AGAppResourcesService.getImage(gradientImage.imageName),
+                                                      targetSize: mainImage.size,
+                                                      alpha: CGFloat(gradientImage.currentValue / 100.0))
+        
         guard let masksImage = editorImage else {
             return UIImage.combineImages(images: [mainImage, finalGradientImage])
         }
@@ -314,6 +290,7 @@ class AGMainImageEditingService : NSObject
         self.coreImage = nil
         self.defaultImage = nil
         self.modifiedImage = nil
+        self.removeGradientFilterImage()
     }
     
 }

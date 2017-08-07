@@ -175,7 +175,7 @@ extension AGCameraViewController
         phoneCamera.flash(mapping[title] ?? .auto)
     }
     
-    func takePicture(_ completion: @escaping () -> ()) {
+    func takePicture() {
         guard let previewLayer = previewLayer else { return }
         
         UIView.animate(withDuration: 0.1, animations: {
@@ -187,7 +187,6 @@ extension AGCameraViewController
         })
         
         phoneCamera.takePhoto(previewLayer, location: nil) {
-            completion()
             self.delegate?.imageToLibrary()
         }
     }

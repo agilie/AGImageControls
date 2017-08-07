@@ -54,14 +54,18 @@ open class AGCameraBottomView: UIView {
         return button
     }()
     
-    lazy var photoGalleryView = AGLastPhotoFromGalleryView(frame: CGRect(x: 0, y: 0, width: 64, height: 64))
+    lazy var photoGalleryView : AGPhotoGalleryButton = { [unowned self] in
+        let button = AGPhotoGalleryButton(frame: CGRect(x: 0, y: 0, width: 64, height: 64))
+            button.delegate = self
+        return button
+    } ()
     
-    lazy var tapGestureRecognizer: UITapGestureRecognizer = { [unowned self] in
-        let gesture = UITapGestureRecognizer()
-            gesture.addTarget(self, action: #selector(handleTapGestureRecognizer(_:)))
-        return gesture
-        }()
-    
+    var isLoading : Bool = false {
+        didSet {
+            self.snapButton.isEnabled = !isLoading
+            self.photoGalleryView.isLoading = isLoading
+        }
+    }
     
     // MARK: Initializers
     
@@ -75,22 +79,15 @@ open class AGCameraBottomView: UIView {
     }
     
     // MARK: - Action methods
-    func snapButtonDidPress (_ button : UIButton)
-    {
+    func snapButtonDidPress (_ button : UIButton) {
         self.delegate?.cameraBottomViewSnapButtonDidTouch(view:self)
     }
     
-    func rotateCameraButtonDidPress(_ button: UIButton)
-    {
+    func rotateCameraButtonDidPress(_ button: UIButton) {
         self.delegate?.cameraBottomViewRotateCameraButtonDidTouch(view: self)
     }
     
-    func handleTapGestureRecognizer(_ recognizer: UITapGestureRecognizer) {
-        self.delegate?.cameraBottomViewPhotoGalleryDidTouch(view: self)
-    }
-    
-    func update()
-    {
+    func update() {
         if let asset = self.dataSource?.lastPhotoFromGallery()
         {
             AGPhotoGalleryService.sharedInstance.resolveAsset(asset,
@@ -101,23 +98,26 @@ open class AGCameraBottomView: UIView {
                 guard let `self` = self else { return }
                 if let newImage = image {
                     self.photoGalleryView.imageView.image = newImage
-                    self.snapButton.isEnabled = true
-                    self.photoGalleryView.finishLoader()
+                    self.isLoading = false
                 }
             })
         }
     }
 }
 
-extension AGCameraBottomView
-{
+extension AGCameraBottomView {
     func configureCameraBottomView () {
         [snapButton, rotateCameraButton, photoGalleryView].forEach {
             addSubview($0 as! UIView)
             ($0 as! UIView).translatesAutoresizingMaskIntoConstraints = false
         }
         backgroundColor = .clear
-        photoGalleryView.addGestureRecognizer(tapGestureRecognizer)
         setupConstraints()
+    }
+}
+
+extension AGCameraBottomView : AGPhotoGalleryButtonDelegate {
+    func photoGalleryButtonDidTouch(photoGalleryButton: AGPhotoGalleryButton) {
+        self.delegate?.cameraBottomViewPhotoGalleryDidTouch(view: self)
     }
 }

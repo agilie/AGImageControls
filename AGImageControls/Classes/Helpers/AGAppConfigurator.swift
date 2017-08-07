@@ -85,5 +85,4 @@ public class AGAppConfigurator {
     public var canRotateCamera = true
     public var isMetalAvailable = false
     
-//    public init() {}
 }

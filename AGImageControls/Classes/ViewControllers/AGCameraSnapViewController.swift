@@ -59,7 +59,7 @@ public class AGCameraSnapViewController: AGMainViewController {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         _ = try? AVAudioSession.sharedInstance().setActive(true)
-        self.obtainPhotosFromGallery(toShowPhotoEditor : false)
+        self.obtainPhotosFromGallery(showPhotoEditor : false)
     }
     
     deinit {
@@ -69,12 +69,12 @@ public class AGCameraSnapViewController: AGMainViewController {
 
 extension AGCameraSnapViewController
 {
-    func obtainPhotosFromGallery (toShowPhotoEditor : Bool)
+    func obtainPhotosFromGallery (showPhotoEditor : Bool)
     {
         AGPhotoGalleryService.sharedInstance.fetchWithCompletion() {[weak self] (assets, isSuccess) in
             guard let `self` = self else { return }
-            isSuccess ? self.updateBottomContainer(assests: assets) : self.obtainPhotosFromGallery(toShowPhotoEditor : false)
-            if toShowPhotoEditor {self.showPhotoEditorViewController()}
+            isSuccess ? self.updateBottomContainer(assests: assets) : self.obtainPhotosFromGallery(showPhotoEditor : false)
+            if showPhotoEditor {self.showPhotoEditorViewController()}
         }
     }
     
@@ -89,14 +89,8 @@ extension AGCameraSnapViewController
     }
     
     fileprivate func takePicture() {
-        bottomContainer.snapButton.isEnabled = false
-        bottomContainer.photoGalleryView.startLoader()
-        
-        let action: (Void) -> Void = { [unowned self] in
-            self.cameraController.takePicture {
-            }
-        }
-        action()
+        bottomContainer.isLoading = true
+        self.cameraController.takePicture()
     }
 }
 
@@ -131,7 +125,7 @@ extension AGCameraSnapViewController: AGCameraViewControllerDelegate {
     }
     
     func imageToLibrary() {
-        self.obtainPhotosFromGallery(toShowPhotoEditor: true)
+        self.obtainPhotosFromGallery(showPhotoEditor: true)
     }
     
     func cameraNotAvailable() {

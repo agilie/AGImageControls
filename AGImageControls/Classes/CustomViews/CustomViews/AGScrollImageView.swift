@@ -68,8 +68,7 @@ class AGScrollImageView: UIView {
     }
     
     func updateGradientFilterImage (gradientFilterItem : AGGradientFilterItemModel) {
-        if self.gradientImageView.image == nil
-        {
+        if self.gradientImageView.image == nil {
             self.gradientImageView.image = AGAppResourcesService.getImage(gradientFilterItem.imageName)
         }
         self.gradientImageView.alpha = CGFloat(gradientFilterItem.currentValue / 100.0)

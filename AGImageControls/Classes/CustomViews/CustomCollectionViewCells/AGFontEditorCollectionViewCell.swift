@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AGFontEditorCollectionViewCell: UICollectionViewCell, AGCellInterface {
+class AGFontEditorCollectionViewCell: AGMainCollectionViewCell{
     
     lazy var fontNameLabel : UILabel = { [unowned self] in
         let label = UILabel()
@@ -20,28 +20,24 @@ class AGFontEditorCollectionViewCell: UICollectionViewCell, AGCellInterface {
         return label
         }()
     
-    open class func cellSize () -> CGSize {
+    open override class func cellSize () -> CGSize {
         return CGSize(width: 110, height : 110)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        self.contentView.backgroundColor = .clear
-        self.backgroundColor = .clear
+    override func configureForObject (object : Any?) {
+        guard let fontItem = object as? AGFontEditorItem else { return }
 
+        self.fontNameLabel.font = fontItem.font.withSize(self.fontNameLabel.font.pointSize)
+        self.fontNameLabel.text = fontItem.shortName
+    }
+}
+
+extension AGFontEditorCollectionViewCell {
+    
+    override func setupCollectionViewCell() {
         self.contentView.addSubview(fontNameLabel)
         fontNameLabel.translatesAutoresizingMaskIntoConstraints = false
         setupConstraints()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureForMenuItem (menuItem: AGFontEditorItem) {
-        self.fontNameLabel.font = menuItem.font.withSize(self.fontNameLabel.font.pointSize)
-        self.fontNameLabel.text = menuItem.shortName
-    }
 }
-

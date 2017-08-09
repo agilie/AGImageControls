@@ -22,10 +22,10 @@ open class AGMainViewController: UIViewController {
     }()
     
     lazy var gradientView : AGGradientView = { [unowned self] in
-        let gradientView = AGGradientView.init(frame: CGRect(x: 0, y: 0, width : UIScreen.main.bounds.size.width, height: 0))
-        gradientView.backgroundColor = .clear
-        gradientView.tintColor = .clear
-        gradientView.setNeedsDisplay()
+        let gradientView = AGGradientView.init(frame: CGRect(x: 0, y: 0, width : screenSize.width, height: 0))
+            gradientView.backgroundColor = .clear
+            gradientView.tintColor = .clear
+            gradientView.setNeedsDisplay()
         
         return gradientView
     }()
@@ -36,15 +36,17 @@ open class AGMainViewController: UIViewController {
             view.alpha = 0.0
         return view
     }()
+    
+    lazy var blurView: UIVisualEffectView = { [unowned self] in
+        let effect = UIBlurEffect(style: .light)
+        let blurView = UIVisualEffectView(effect: effect)
+            blurView.frame = self.view.bounds
+        return blurView
+    }()
 
     lazy var configurator : AGAppConfigurator =
         {
             return  AGAppConfigurator.sharedInstance
-    }()
-    
-    lazy var screenSize : CGSize =
-        {
-            return CGSize (width : UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
     }()
     
     override open func viewDidLoad() {
@@ -69,8 +71,9 @@ open class AGMainViewController: UIViewController {
     
     func  activityViewAnimated (isAnimated : Bool) {
         self.activityView.center = self.view.center
+        self.view.isUserInteractionEnabled = !isAnimated
         isAnimated ? self.activityView.startAnimating() : self.activityView.stopAnimating()
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.245, animations: {
             self.activityView.alpha = isAnimated ? 1.0 : 0.0
         })
     }

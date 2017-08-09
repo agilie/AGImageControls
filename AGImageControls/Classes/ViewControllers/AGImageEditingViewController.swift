@@ -96,7 +96,7 @@ class AGImageEditingViewController: AGMainViewController {
     
     
     lazy var imageMasksView : AGImageMasksView = { [unowned self] in
-        let imageMasksView = AGImageMasksView.init(frame: CGRect(x: 0, y: 0, width : UIScreen.main.bounds.size.width, height: 0))
+        let imageMasksView = AGImageMasksView.init(frame: CGRect(x: 0, y: 0, width : screenSize.width, height: 0))
             imageMasksView.dataSource = self
             imageMasksView.delegate = self
             imageMasksView.backgroundColor = .clear
@@ -121,19 +121,22 @@ class AGImageEditingViewController: AGMainViewController {
         self.settingsMenuCollectionView.show(viewController: self)
         self.gradientView.updateHeight(viewController: self, height: AGSettingsMenuCollectionView.ViewSizes.height)
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
+        
     override func navigationViewDoneButtonDidTouch(view: AGNavigationView) {
         self.activityViewAnimated(isAnimated: true)
-        self.dismiss(animated: false) { [weak self] in
-            guard let `self` = self else { return }
-            let posterImage = self.editingService.posterImage(editorImage: self.imageEditorViewController?.imageView.obtainItsVisibleImage())
-            AGPhotoGalleryService.sharedInstance.saveImageToCameraRoll(image: posterImage)
-            self.delegate?.posterImage(imageEditingViewController: self, image: posterImage)
-            self.activityViewAnimated(isAnimated: false)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let posterImage = self.editingService.posterImage(editorImage: self.imageEditorViewController?.imageView.obtainItsVisibleImage())
+                    
+                DispatchQueue.main.async {
+                AGPhotoGalleryService.sharedInstance.saveImageToCameraRoll(image: posterImage)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    self.activityViewAnimated(isAnimated: false)
+                    self.dismiss(animated: false) { [weak self] in
+                        guard let `self` = self else { return }
+                        self.delegate?.posterImage(imageEditingViewController: self, image: posterImage)
+                    }
+                }
+            }
         }
     }
 }
@@ -142,7 +145,6 @@ extension AGImageEditingViewController
 {
     fileprivate func configureImageEditingViewController() {
         self.view.backgroundColor = self.configurator.mainColor
-        
         [self.scrollImageView, self.navigationView,  self.gradientView, self.settingsMenuCollectionView, self.imageAdjustmentView, self.gradientFilterView, self.imageMasksView, self.activityView].forEach {
             ($0 as! UIView).translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview($0 as! UIView)
@@ -215,9 +217,6 @@ extension AGImageEditingViewController
         {
             self.imageEditorViewController = AGImageEditorViewController.createWithType(type: type ?? .icons, imageName : imageName)
             self.imageEditorViewController?.delegate = self
-            
-//            self.view.insertSubview(self.imageEditorViewController!.view, belowSubview: self.navigationView)
-            
             self.view.insertSubview(self.imageEditorViewController!.view, aboveSubview: self.scrollImageView)
             return
         }

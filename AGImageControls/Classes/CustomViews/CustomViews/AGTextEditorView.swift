@@ -17,7 +17,7 @@ class AGTextEditorView: UIView {
     weak var delegate : AGTextEditorViewDelegate? = nil
     
     struct ViewSizes {
-        static let size = UIScreen.main.bounds.size
+        static let size = screenSize
         static let keyboardSize = CGSize.zero
         static let textViewLeftTopPoint = CGPoint (x: 0, y: AGNavigationView.ViewSizes.viewHeight)
         static let textViewRightLeftOffset : CGFloat = 16.0

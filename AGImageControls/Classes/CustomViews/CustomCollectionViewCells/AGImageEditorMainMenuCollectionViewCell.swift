@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AGImageEditorMainMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
+class AGImageEditorMainMenuCollectionViewCell: AGMainCollectionViewCell {
    
     struct ViewSizes {
         static let labelSize : CGSize = CGSize(width : 75, height : 36)
@@ -21,23 +21,14 @@ class AGImageEditorMainMenuCollectionViewCell: UICollectionViewCell, AGCellInter
         return label
         }()
     
-    open class func cellSize () -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width / 3, height : 86.0)
+    open override class func cellSize () -> CGSize {
+        return CGSize(width: screenSize.width / 3, height : 86.0)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.contentView.addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        setupConstraints()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureForMenuItem (menuItem: AGImageEditorMainMenuItem) {
-        self.configureTitleLabel(menuItem: menuItem)
+    override func configureForObject (object: Any?) {
+        guard let imageEditorItem = object as? AGImageEditorMainMenuItem else { return }
+
+        self.configureTitleLabel(menuItem: imageEditorItem)
     }
 }
 
@@ -48,5 +39,11 @@ extension AGImageEditorMainMenuCollectionViewCell
         self.titleLabel.textColor = menuItem.isSelected ? menuItem.selectedTextColor : menuItem.textColor
         self.titleLabel.text = menuItem.name
         self.titleLabel.isHidden = menuItem.isHidden
+    }
+    
+    override func setupCollectionViewCell() {
+        self.contentView.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        setupConstraints()
     }
 }

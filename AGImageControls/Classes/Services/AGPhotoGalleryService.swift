@@ -134,8 +134,7 @@ open class AGPhotoGalleryService: UIView {
         }
     }
     
-    open func saveImageToCameraRoll (image : UIImage)
-    {
+    open func saveImageToCameraRoll (image : UIImage) {
         UIImageWriteToSavedPhotosAlbum(image, self, #selector(AGPhotoGalleryService.image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     

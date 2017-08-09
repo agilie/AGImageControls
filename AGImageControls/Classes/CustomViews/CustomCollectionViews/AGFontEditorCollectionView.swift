@@ -18,7 +18,7 @@ protocol AGFontEditorCollectionViewDelegate: class {
     func fontChanged (fontEditorCollectionView : AGFontEditorCollectionView, fontIndex : Int)
 }
 
-class AGFontEditorCollectionView: UICollectionView {
+class AGFontEditorCollectionView: AGMainCollectionView {
  
     weak var fontEditorCollectionViewDataSource : AGFontEditorCollectionViewDataSource?
     weak var fontEditorCollectionViewDelegate : AGFontEditorCollectionViewDelegate?
@@ -36,72 +36,47 @@ class AGFontEditorCollectionView: UICollectionView {
     
         super.init(frame: frame, collectionViewLayout: flowLayout)
         if #available(iOS 10.0, *) { self.isPrefetchingEnabled = false }
-
-        self.setupCollectionView()
     }
     
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
+        super.init(coder: aDecoder)
     }    
 }
 
 extension AGFontEditorCollectionView {
-    fileprivate func setupCollectionView () {
-        self.dataSource = self
-        self.delegate = self
-        self.showsHorizontalScrollIndicator = false
-        self.showsVerticalScrollIndicator = false
+    
+    override func registerCollectionViewCells () {
         self.register(AGFontEditorCollectionViewCell.self, forCellWithReuseIdentifier: AGFontEditorCollectionViewCell.id)
-        self.backgroundColor = .clear
+    }
+    
+    override func cellSize(atIndexPath : IndexPath) -> CGSize {
+        return AGFontEditorCollectionViewCell.cellSize()
+    }
+    
+    override func numberOfItems (section : Int) -> Int {
+        return self.fontEditorCollectionViewDataSource?.numberOfItemsInSection(fontEditorCollectionView: self, section: section) ?? 0
+    }
+    
+    override func cellIdentifierAt (indexPath : IndexPath) -> String {
+        return AGFontEditorCollectionViewCell.id
+    }
+    
+    override func objectAt (indexPath : IndexPath) -> Any? {
+        return self.fontEditorCollectionViewDataSource?.menuItemAtIndexPath(fontEditorCollectionView: self, indexPath: indexPath)
+    }
+    
+    override func didSelectItemAtIndexPath (indexPath : IndexPath) {
+        self.fontEditorCollectionViewDelegate?.selectedItem(fontEditorCollectionView: self, atIndexPath: indexPath)
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let center = CGPoint(x: scrollView.contentOffset.x + (scrollView.frame.width / 2), y: (scrollView.frame.height / 2))
+        if let ip = self.indexPathForItem(at: center) {
+            self.fontDidChange (indexPath: ip)
+        }
     }
     
     fileprivate func fontDidChange (indexPath : IndexPath) {
         self.fontEditorCollectionViewDelegate?.fontChanged(fontEditorCollectionView: self, fontIndex: indexPath.row)
     }
 }
-
-extension AGFontEditorCollectionView : UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.fontEditorCollectionViewDataSource?.numberOfItemsInSection(fontEditorCollectionView: self, section: section) ?? 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cellIdentifier = AGFontEditorCollectionViewCell.id
-        
-        guard let currentMenuItem = self.fontEditorCollectionViewDataSource?.menuItemAtIndexPath(fontEditorCollectionView: self, indexPath: indexPath) else {
-            return UICollectionViewCell()
-            
-        }
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as? AGFontEditorCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        
-        cell.configureForMenuItem(menuItem: currentMenuItem)
-        return cell
-    }
-}
-
-extension AGFontEditorCollectionView : UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.fontEditorCollectionViewDelegate?.selectedItem(fontEditorCollectionView: self, atIndexPath: indexPath)
-    }
-}
-
-extension AGFontEditorCollectionView : UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return AGFontEditorCollectionViewCell.cellSize()
-    }
-}
-
-extension AGFontEditorCollectionView : UIScrollViewDelegate {
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let center = CGPoint(x: scrollView.contentOffset.x + (scrollView.frame.width / 2), y: (scrollView.frame.height / 2))
-        if let ip = self.indexPathForItem(at: center) {
-            self.fontDidChange (indexPath: ip)
-        }
-    }
-}
-

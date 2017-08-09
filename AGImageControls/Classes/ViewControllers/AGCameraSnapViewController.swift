@@ -153,7 +153,7 @@ extension AGCameraSnapViewController : AGPhotoResizeViewControllerDelegate
 
 extension AGCameraSnapViewController : AGPhotoGalleryViewControllerDelegate
 {
-    func posterImage (photoGalleryViewController : AGPhotoGalleryViewController, image : UIImage) {
+    public func posterImage (photoGalleryViewController : AGPhotoGalleryViewController, image : UIImage) {
         self.dismiss(animated: true) { [weak self] in
             guard let `self` = self else { return }
             self.delegate?.fetchImage(cameraSnapViewController: self, image: image)

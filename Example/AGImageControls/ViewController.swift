@@ -15,12 +15,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     @IBAction func captureNewImageButtonDidTouch(_ sender: Any) {
@@ -28,12 +22,26 @@ class ViewController: UIViewController {
             camera.delegate = self
         self.present(camera, animated: true, completion: nil)
     }
+    
+    
+    @IBAction func openPhotoGalleryButtonDidTouch(_ sender: Any) {
+        let photoGallery = AGPhotoGalleryViewController()
+            photoGallery.delegate = self
+        self.present(photoGallery, animated: true, completion: nil)
+    }
 }
 
-extension ViewController : AGCameraSnapViewControllerDelegate
-{
-    func fetchImage (cameraSnapViewController : AGCameraSnapViewController, image : UIImage)
-    {
+extension ViewController : AGCameraSnapViewControllerDelegate {
+    
+    func fetchImage (cameraSnapViewController : AGCameraSnapViewController, image : UIImage) {
+        self.imageView.image = image
+    }
+    
+}
+
+extension ViewController : AGPhotoGalleryViewControllerDelegate {
+    
+    func posterImage (photoGalleryViewController : AGPhotoGalleryViewController, image : UIImage) {
         self.imageView.image = image
     }
     

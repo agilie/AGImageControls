@@ -8,14 +8,13 @@
 
 import UIKit
 
-class AGSettingsMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
+class AGSettingsMenuCollectionViewCell: AGMainCollectionViewCell {
     
     var underlineViewLeftConstraint : NSLayoutConstraint? = nil
     var underlineViewRightConstraint : NSLayoutConstraint? = nil
     
-    lazy var configurator : AGAppConfigurator =
-        {
-            return  AGAppConfigurator.sharedInstance
+    lazy var configurator : AGAppConfigurator = {
+        return  AGAppConfigurator.sharedInstance
     }()
 
     struct ViewSizes {
@@ -44,25 +43,14 @@ class AGSettingsMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
         return (AGSettingsMenuCollectionViewCell.cellSize().width - ViewSizes.underlineViewHeight) / 2
     }()
     
-    open class func cellSize () -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width / 5, height : UIScreen.main.bounds.width / 5)
+    open override class func cellSize () -> CGSize {
+        return CGSize(width: screenSize.width / 5, height : screenSize.width / 5)
     }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        [imageView, underlineView].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            contentView.addSubview($0)
-        }
-        setupConstraints()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureForSettingMenuItem (menuItem: AGSettingMenuItemModel) {
-        self.imageView.image = AGAppResourcesService.getImage(menuItem.iconName)
+        
+    override func configureForObject (object: Any?) {
+        guard let settingItem = object as? AGSettingMenuItemModel else { return }
+
+        self.imageView.image = AGAppResourcesService.getImage(settingItem.iconName)
     }
     
     func select () {
@@ -89,5 +77,14 @@ extension AGSettingsMenuCollectionViewCell
             self.underlineView.isHidden = isHidden
         }
     }
+    
+    override func setupCollectionViewCell() {
+        [imageView, underlineView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
+        }
+        setupConstraints()
+    }
+    
 }
 

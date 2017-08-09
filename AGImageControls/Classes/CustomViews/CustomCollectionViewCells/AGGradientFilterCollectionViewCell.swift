@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AGGradientFilterCollectionViewCell: UICollectionViewCell, AGCellInterface {
+class AGGradientFilterCollectionViewCell: AGMainCollectionViewCell {
     
     struct ViewSizes {
         static let imageViewSize : CGSize = AGGradientFilterCollectionViewCell.cellSize()
@@ -28,23 +28,23 @@ class AGGradientFilterCollectionViewCell: UICollectionViewCell, AGCellInterface 
     
     static let maxScreenSize : CGFloat = 414.0
     
-    open class func cellSize () -> CGSize {
-        let maxSize = UIScreen.main.bounds.width / ((UIScreen.main.bounds.width < maxScreenSize) ? 5 : 6)
+    open override class func cellSize () -> CGSize {
+        let maxSize = screenSize.width / ((screenSize.width < maxScreenSize) ? 5 : 6)
         return CGSize(width: maxSize, height : maxSize)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func configureForObject (object :  Any?) {
+        guard let gradientItem = object as? AGGradientFilterItemModel else { return }
+
+        self.imageView.image = AGAppResourcesService.getImage(gradientItem.iconName)
+    }
+}
+
+extension AGGradientFilterCollectionViewCell {
+    
+    override func setupCollectionViewCell() {
         self.contentView.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         setupConstraints()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureForMenuItem (menuItem: AGGradientFilterItemModel) {
-        self.imageView.image = AGAppResourcesService.getImage(menuItem.iconName)
     }
 }

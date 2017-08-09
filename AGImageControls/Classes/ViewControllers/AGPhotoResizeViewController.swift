@@ -37,28 +37,23 @@ class AGPhotoResizeViewController: AGMainViewController {
     }()
         
     var imageScale : CGFloat = 1.0
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configurePhotoEditorViewController()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
 }
 
 extension AGPhotoResizeViewController
 {
-    override func navigationViewDoneButtonDidTouch (view : AGNavigationView)
-    {
+    override func navigationViewDoneButtonDidTouch (view : AGNavigationView) {
         self.cropImageToVisibleRect()
         self.cropToMaxScaleSize()
         self.showImageEditingViewController()
     }
     
-    fileprivate func loadImage(atIndex index : Int)
-    {
+    fileprivate func loadImage(atIndex index : Int) {
         self.activityViewAnimated(isAnimated: true)
         AGPhotoGalleryService.sharedInstance.resolveAsset(AGPhotoGalleryService.sharedInstance.assets[index]) {[weak self] (image) in
             guard let `self` = self else { return }
@@ -68,8 +63,7 @@ extension AGPhotoResizeViewController
         }
     }
     
-    fileprivate func configurePhotoEditorViewController ()
-    {
+    fileprivate func configurePhotoEditorViewController () {
         self.view.backgroundColor = self.configurator.mainColor
         
         [scrollView, navigationView, activityView].forEach {
@@ -79,8 +73,7 @@ extension AGPhotoResizeViewController
         self.setupConstraints()
     }
         
-    fileprivate func configureScrollView (image : UIImage)
-    {
+    fileprivate func configureScrollView (image : UIImage) {
         for subview in scrollView.subviews
         {
             subview.removeFromSuperview()
@@ -96,8 +89,7 @@ extension AGPhotoResizeViewController
                                                     height: screenSize.height), animated: false)
     }
     
-    fileprivate func scrollViewContentSize (image : UIImage) -> CGSize
-    {
+    fileprivate func scrollViewContentSize (image : UIImage) -> CGSize {
         var height = screenSize.height
         var width = screenSize.width
         
@@ -113,8 +105,7 @@ extension AGPhotoResizeViewController
         return CGSize(width: width, height: height)
     }
     
-    fileprivate func cropImageToVisibleRect ()
-    {
+    fileprivate func cropImageToVisibleRect () {
         guard let image = self.imageView.image else {
             return
         }
@@ -130,8 +121,7 @@ extension AGPhotoResizeViewController
         self.configureScrollView(image: UIImage.cropToSize(image: image, rect: visibleRect))
     }
 
-    fileprivate func cropToMaxScaleSize ()
-    {
+    fileprivate func cropToMaxScaleSize () {
         guard let image = self.imageView.image else {
             return
         }
@@ -141,8 +131,7 @@ extension AGPhotoResizeViewController
         self.configureScrollView(image: UIImage.resizeImage(image: image, targetSize: size))
     }
 
-    fileprivate func showImageEditingViewController ()
-    {
+    fileprivate func showImageEditingViewController () {
         guard let image = self.imageView.image else { return }
         let imageEditingViewController = AGImageEditingViewController.createWithImage(image: image)
             imageEditingViewController.delegate = self
@@ -153,6 +142,7 @@ extension AGPhotoResizeViewController
 extension AGPhotoResizeViewController : AGImageEditingViewControllerDelegate
 {
     func posterImage (imageEditingViewController : AGImageEditingViewController, image : UIImage) {
+        self.imageView.image = image
         self.dismiss(animated: false) { [weak self] in
             guard let `self` = self else { return }
             self.delegate?.posterImage(photoResizeViewController : self, image: image)

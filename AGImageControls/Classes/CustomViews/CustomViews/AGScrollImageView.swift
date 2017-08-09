@@ -101,7 +101,7 @@ extension AGScrollImageView
         {
             subview.removeFromSuperview()
         }
-        self.scrollView.contentSize = UIScreen.main.bounds.size
+        self.scrollView.contentSize = screenSize
         
         for view in [imageView, gradientImageView]
         {

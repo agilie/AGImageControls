@@ -18,21 +18,9 @@ protocol AGCameraViewControllerDelegate: class {
     
 }
 
-class AGCameraViewController: UIViewController {
+class AGCameraViewController: AGMainViewController {
 
     weak var delegate: AGCameraViewControllerDelegate?
-
-    lazy var configurator : AGAppConfigurator =
-        {
-        return  AGAppConfigurator.sharedInstance
-    }()
-    
-    lazy var blurView: UIVisualEffectView = { [unowned self] in
-        let effect = UIBlurEffect(style: .light)
-        let blurView = UIVisualEffectView(effect: effect)
-            blurView.frame = self.view.bounds
-        return blurView
-    }()
     
     lazy var focusImageView: UIImageView = { [unowned self] in
         let imageView = UIImageView.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
@@ -114,17 +102,9 @@ class AGCameraViewController: UIViewController {
         phoneCamera.setup(self.startOnFrontCamera)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         previewLayer?.connection.videoOrientation = .portrait
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
     }
 }
 
@@ -169,8 +149,8 @@ extension AGCameraViewController
     
     func flashCamera(_ title: String) {
         let mapping: [String: AVCaptureFlashMode] = [
-            "ON": .on,
-            "OFF": .off
+            self.configurator.flashButtonOnTitle  : .on,
+            self.configurator.flashButtonOffTitle : .off
         ]
         phoneCamera.flash(mapping[title] ?? .auto)
     }

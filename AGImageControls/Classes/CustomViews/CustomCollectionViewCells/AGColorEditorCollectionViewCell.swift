@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AGColorEditorCollectionViewCell: UICollectionViewCell, AGCellInterface {
+class AGColorEditorCollectionViewCell: AGMainCollectionViewCell {
     
     lazy var colorView : UIView = { [unowned self] in
         let view = UIView()
@@ -17,26 +17,23 @@ class AGColorEditorCollectionViewCell: UICollectionViewCell, AGCellInterface {
         return view
         }()
     
-    open class func cellSize () -> CGSize {
+    open override class func cellSize () -> CGSize {
         return CGSize(width: 78, height : 54)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func configureForObject (object : Any?) {
+        guard let colorItem = object as? AGColorEditorItem else { return }
         
-        self.contentView.backgroundColor = .clear
-        self.backgroundColor = .clear
-        
+        self.colorView.backgroundColor = colorItem.color
+    }
+}
+
+extension AGColorEditorCollectionViewCell {
+   
+    override func setupCollectionViewCell() {
         self.contentView.addSubview(colorView)
         colorView.translatesAutoresizingMaskIntoConstraints = false
         setupConstraints()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureForMenuItem (menuItem: AGColorEditorItem) {
-        self.colorView.backgroundColor = menuItem.color
-    }
 }

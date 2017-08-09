@@ -45,3 +45,5 @@ enum AGImageEditorTypes : Int {
     case shapes
     case icons
 }
+
+let screenSize = UIScreen.main.bounds.size

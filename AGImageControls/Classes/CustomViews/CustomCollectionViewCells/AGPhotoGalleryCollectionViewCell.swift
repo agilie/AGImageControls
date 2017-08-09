@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-class AGPhotoGalleryCollectionViewCell: UICollectionViewCell, AGCellInterface
+class AGPhotoGalleryCollectionViewCell: AGMainCollectionViewCell
 {
     lazy var imageView : UIImageView = { [unowned self] in
         let imageView = UIImageView()
@@ -21,21 +21,22 @@ class AGPhotoGalleryCollectionViewCell: UICollectionViewCell, AGCellInterface
     
     open class func cellSize (atIndexPath indexPath : IndexPath) -> CGSize {
        return (indexPath.row == 0) ?
-        CGSize(width: UIScreen.main.bounds.width, height : UIScreen.main.bounds.height * 0.6) :
-        CGSize(width: UIScreen.main.bounds.width / 3, height : UIScreen.main.bounds.width / 3)
+        CGSize(width: screenSize.width, height : screenSize.height * 0.6) :
+        CGSize(width: screenSize.width / 3, height : screenSize.width / 3)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func configureForObject (object: Any?) {
+        guard let image = object as? UIImage else {
+            return
+        }
+        self.imageView.image = image
+    }
+}
+
+extension AGPhotoGalleryCollectionViewCell {
+    
+    override func setupCollectionViewCell() {
         setupConstraints()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func configureForImageObject(photo: UIImage)
-    {
-        self.imageView.image = photo
-    }
 }

@@ -117,11 +117,6 @@ class AGImageEditorViewController: AGMainViewController {
         super.viewDidLoad()
         self.configureImageEditorViewController()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     func showWith (type : AGImageEditorTypes?, editableImage : AGEditableImageView? = nil, imageName : String? = nil) {
         self.currentEditorType = nil

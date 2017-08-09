@@ -17,8 +17,7 @@ protocol AGImageEditorMainMenuCollectionViewDelegate: class {
     func selectedItem (atIndexPath indexPath: IndexPath)
 }
 
-
-class AGImageEditorMainMenuCollectionView: UICollectionView {
+class AGImageEditorMainMenuCollectionView: AGMainCollectionView {
 
     weak var imageEditorMainMenuDataSource : AGImageEditorMainMenuCollectionViewDataSource?
     weak var imageEditorMainMenuDelegate : AGImageEditorMainMenuCollectionViewDelegate?
@@ -27,21 +26,6 @@ class AGImageEditorMainMenuCollectionView: UICollectionView {
     
     struct ViewSizes {
         static let height: CGFloat = AGImageEditorMainMenuCollectionViewCell.cellSize().height
-    }
-    
-    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout?) {
-        let flowLayout = UICollectionViewFlowLayout()
-            flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            flowLayout.minimumInteritemSpacing = 0
-            flowLayout.minimumLineSpacing = 0
-            flowLayout.scrollDirection = .horizontal
-
-        super.init(frame: frame, collectionViewLayout: flowLayout)
-        self.setupCollectionView()
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
     }
     
     func show (viewController : AGImageEditorViewController) {
@@ -61,52 +45,28 @@ class AGImageEditorMainMenuCollectionView: UICollectionView {
 //MARK: Private methods
 
 extension AGImageEditorMainMenuCollectionView {
-    fileprivate func setupCollectionView () {
-        self.dataSource = self
-        self.delegate = self
-        self.showsHorizontalScrollIndicator = false
-        self.showsVerticalScrollIndicator = false
+    
+    override func registerCollectionViewCells() {
         self.register(AGImageEditorMainMenuCollectionViewCell.self, forCellWithReuseIdentifier: AGImageEditorMainMenuCollectionViewCell.id)
-        self.backgroundColor = .clear
     }
     
-    fileprivate func hideWithAnimation (viewController : AGImageEditorViewController, isHidden : Bool) {
-        if let index = self.selectedIndexPath {
-            if let previousItem = self.imageEditorMainMenuDataSource?.menuItemAtIndexPath(indexPath: index) {
-                previousItem.isSelected = false
-            }
-        }
-        UIView.animate(withDuration: 0.245) {
-            viewController.imageEditorMainMenuCollectionViewBottomConstraint?.constant = isHidden ? ViewSizes.height : 0
-            viewController.view.layoutIfNeeded()
-        }
+    override func cellSize(atIndexPath : IndexPath) -> CGSize {
+        return AGImageEditorMainMenuCollectionViewCell.cellSize()
     }
-}
-
-extension AGImageEditorMainMenuCollectionView : UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func numberOfItems (section : Int) -> Int {
         return self.imageEditorMainMenuDataSource?.numberOfItemsInSection(section: section) ?? 0
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cellIdentifier = AGImageEditorMainMenuCollectionViewCell.id
-        
-        guard let currentMenuItem = self.imageEditorMainMenuDataSource?.menuItemAtIndexPath(indexPath: indexPath) else {
-            return UICollectionViewCell()
-            
-        }
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as? AGImageEditorMainMenuCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        cell.configureForMenuItem(menuItem: currentMenuItem)
-        return cell
+    override func cellIdentifierAt (indexPath : IndexPath) -> String {
+        return AGImageEditorMainMenuCollectionViewCell.id
     }
-}
-
-extension AGImageEditorMainMenuCollectionView : UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    
+    override func objectAt (indexPath : IndexPath) -> Any? {
+        return self.imageEditorMainMenuDataSource?.menuItemAtIndexPath(indexPath: indexPath)
+    }
+    
+    override func didSelectItemAtIndexPath (indexPath : IndexPath) {
         self.imageEditorMainMenuDelegate?.selectedItem(atIndexPath: indexPath)
         
         if let index = self.selectedIndexPath {
@@ -128,8 +88,16 @@ extension AGImageEditorMainMenuCollectionView : UICollectionViewDelegate {
     }
 }
 
-extension AGImageEditorMainMenuCollectionView : UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return AGImageEditorMainMenuCollectionViewCell.cellSize()
+extension AGImageEditorMainMenuCollectionView {
+    fileprivate func hideWithAnimation (viewController : AGImageEditorViewController, isHidden : Bool) {
+        if let index = self.selectedIndexPath {
+            if let previousItem = self.imageEditorMainMenuDataSource?.menuItemAtIndexPath(indexPath: index) {
+                previousItem.isSelected = false
+            }
+        }
+        UIView.animate(withDuration: 0.245) {
+            viewController.imageEditorMainMenuCollectionViewBottomConstraint?.constant = isHidden ? ViewSizes.height : 0
+            viewController.view.layoutIfNeeded()
+        }
     }
 }

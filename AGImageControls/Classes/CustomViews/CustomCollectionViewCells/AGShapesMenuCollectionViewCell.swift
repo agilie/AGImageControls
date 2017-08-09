@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AGShapesMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
+class AGShapesMenuCollectionViewCell: AGMainCollectionViewCell {
     
     lazy var shapeImageView : UIImageView = { [unowned self] in
         let shapeImageView = UIImageView()
@@ -23,30 +23,23 @@ class AGShapesMenuCollectionViewCell: UICollectionViewCell, AGCellInterface {
         static let shapeImageViewSize : CGSize = CGSize(width : 62, height : 72)
     }
     
-    open class func cellSize () -> CGSize {
+    open override class func cellSize () -> CGSize {
         return CGSize(width: 81, height : 81)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        self.contentView.backgroundColor = .clear
-        self.backgroundColor = .clear
-        
-        for subview in [shapeImageView] as [UIView]
-        {
-            self.contentView.addSubview(subview)
-            subview.translatesAutoresizingMaskIntoConstraints = false
-        }
+    override func configureForObject (object: Any?) {
+        guard let imageName = object as? String else { return }
+
+        self.shapeImageView.image = AGAppResourcesService.getImage(imageName)
+    }
+}
+
+extension AGShapesMenuCollectionViewCell {
+    
+    override func setupCollectionViewCell() {        
+        self.contentView.addSubview(shapeImageView)
+        shapeImageView.translatesAutoresizingMaskIntoConstraints = false
         setupConstraints()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configureWith (imageName: String) {
-        self.shapeImageView.image = AGAppResourcesService.getImage(imageName)
-    }
-
 }

@@ -305,8 +305,6 @@ extension AGEditableImageView
     }
     
     func updateShapeSizes () {
-        let screenSize = UIScreen.main.bounds.size
-        
         let maxScale = max(screenSize.width / self.imageDefaultSize.width, screenSize.height / self.imageDefaultSize.height)
         let currentScale = max(self.frame.size.width / self.imageDefaultSize.width, self.frame.size.height / self.imageDefaultSize.height)
         

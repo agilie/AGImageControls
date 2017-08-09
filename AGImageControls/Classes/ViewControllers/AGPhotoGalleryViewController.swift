@@ -8,13 +8,13 @@
 
 import UIKit
 
-protocol AGPhotoGalleryViewControllerDelegate : class {
+public protocol AGPhotoGalleryViewControllerDelegate : class {
     func posterImage (photoGalleryViewController : AGPhotoGalleryViewController, image : UIImage)
 }
 
-class AGPhotoGalleryViewController: AGMainViewController {
+public class AGPhotoGalleryViewController: AGMainViewController {
 
-    weak var delegate : AGPhotoGalleryViewControllerDelegate?
+    public weak var delegate : AGPhotoGalleryViewControllerDelegate?
     
     lazy var photoGalleryCollectionView: AGPhotoGalleryCollectionView = { [unowned self] in
         let collectionView = AGPhotoGalleryCollectionView(frame: self.view.bounds, collectionViewLayout: nil)
@@ -31,14 +31,10 @@ class AGPhotoGalleryViewController: AGMainViewController {
         }
     }
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.configurePhotoGalleryViewController()
         self.loadPhotos()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
     }
 }
 
@@ -90,6 +86,5 @@ extension AGPhotoGalleryViewController : AGPhotoResizeViewControllerDelegate
             guard let `self` = self else { return }
             self.delegate?.posterImage(photoGalleryViewController : self, image: image)
         }
-//        self.dismiss(animated: false, completion: nil)
     }
 }

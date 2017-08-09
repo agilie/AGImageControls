@@ -34,6 +34,10 @@ public class AGPhotoGalleryViewController: AGMainViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         self.configurePhotoGalleryViewController()
+    }
+    
+    override public func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.loadPhotos()
     }
 }
@@ -51,6 +55,13 @@ extension AGPhotoGalleryViewController
     }
     
     fileprivate func loadPhotos () {
+        AGPhotoGalleryService.sharedInstance.fetchWithCompletion() {[weak self] (assets, isSuccess) in
+            guard let `self` = self else { return }
+            isSuccess ? self.obtainImagesFromPhotoGallery() : self.loadPhotos()
+        }
+    }
+    
+    fileprivate func obtainImagesFromPhotoGallery () {
         self.view.isUserInteractionEnabled = false
         AGPhotoGalleryService.sharedInstance.imagesFromPhotoGallery() {[weak self] (images) in
             guard let `self` = self else { return }

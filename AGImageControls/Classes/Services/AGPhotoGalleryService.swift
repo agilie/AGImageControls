@@ -165,6 +165,7 @@ extension AGPhotoGalleryService
                     self.presentAskPermissionAlert(viewController : viewController, completion)
                     return
                 }
+                completion ([], false)
             }
         }
     }

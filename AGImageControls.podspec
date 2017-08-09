@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 s.name             = 'AGImageControls'
-s.version          = '0.1.5'
+s.version          = '0.1.6'
 s.platform         = :ios, '9.0'
 s.summary          = 'A short description of AGImageControls.'
 s.description      = <<-DESC
@@ -18,7 +18,7 @@ DESC
 s.homepage         = 'https://github.com/agilie/AGImageControls'
 s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Agilie' => 'info@agilie.com' }
-s.source           = { :git => 'https://github.com/agilie/AGImageControls.git', :tag => '0.1.5' }
+s.source           = { :git => 'https://github.com/agilie/AGImageControls.git', :tag => '0.1.6' }
 
 s.ios.deployment_target = '9.0'
 #s.requires_arc = true
